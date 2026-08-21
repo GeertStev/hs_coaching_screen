@@ -34,13 +34,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
-  assets:
-    - assets/fonts/
-    - assets/google_fonts/
-
-
-  fonts:
-    - family: Neulis
-      fonts:
-        - asset: assets/fonts/neulis-black.otf

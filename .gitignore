@@ -32,18 +32,7 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
-/android/
-/ios/
-/linux/
-/macos/
-/web/
-/windows/
-analysis_options.yaml
-firebase.json
 lib.zip
-pubspec.lock
-pubspec.yaml
-.metadata
 
 # Symbolication related
 app.*.symbols

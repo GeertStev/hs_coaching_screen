@@ -11,6 +11,7 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
+lib.zip
 
 # IntelliJ related
 *.iml
@@ -27,12 +28,12 @@ migrate_working_dir/
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
+.flutter-plugins
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
 /build/
 /coverage/
-lib.zip
 
 # Symbolication related
 app.*.symbols
@@ -45,7 +46,26 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Android signing secrets
+# Firebase CLI cache (hosting deploys, emulators)
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+database-debug.log*
+ui-debug.log*
+
+# Secrets — nooit committen
+# Android signing
 **/android/key.properties
 *.jks
 *.keystore
+# iOS/macOS signing
+*.p12
+*.mobileprovision
+# Omgevingsvariabelen
+.env
+.env.*
+!.env.example
+# Firebase/Google Cloud service accounts (admin-rechten!)
+*-firebase-adminsdk-*.json
+service-account*.json
+serviceAccount*.json

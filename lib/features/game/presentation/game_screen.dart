@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hs_coaching_screen/features/game/data/game_settings_repository.dart';
+import 'package:hs_coaching_screen/common/widgets/async_content.dart';
 
 class GameScreen extends ConsumerWidget {
   const GameScreen({super.key});
@@ -9,7 +10,8 @@ class GameScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final gameSettings = ref.watch(gameSettingsProvider);
 
-    return gameSettings.when(
+    return AsyncContent(
+      value: gameSettings,
       data: (settings) {
         return Center(
           child: Row(
@@ -32,10 +34,6 @@ class GameScreen extends ConsumerWidget {
           ),
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Text('Error: $error', style: const TextStyle(color: Colors.red)),
-      ),
     );
   }
 }

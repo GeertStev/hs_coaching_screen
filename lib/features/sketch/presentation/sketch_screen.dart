@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:hs_coaching_screen/data/providers/global_settings_provider.dart';
 import 'package:hs_coaching_screen/features/sketch/data/sketch_providers.dart';
 import 'package:hs_coaching_screen/features/sketch/presentation/sketch_painter.dart';
+import 'package:hs_coaching_screen/common/widgets/async_content.dart';
 
 class SketchScreen extends ConsumerStatefulWidget {
   const SketchScreen({super.key});
@@ -32,7 +33,8 @@ class _SketchCanvasState extends ConsumerState<SketchScreen> {
       child: Stack(
         children: [
           // 1. De SVG Achtergrond
-          sketchAsync.when(
+          AsyncContent(
+            value: sketchAsync,
             data: (sketch) {
               if (sketch != null &&
                   (sketch.backgroundUrl == null ||
@@ -56,12 +58,12 @@ class _SketchCanvasState extends ConsumerState<SketchScreen> {
                 key: ValueKey(sketch.backgroundUrl),
               );
             },
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) => Center(child: Text('Error: $error')),
           ),
 
           // 2. De Render
-          globalSettings.when(
+          AsyncContent(
+            value: globalSettings,
+            showErrorBadge: false, // al getoond door DisplayLimits
             data: (settings) {
               final targetSize = Size(
                 settings.contentWidth.toDouble(),
@@ -76,9 +78,6 @@ class _SketchCanvasState extends ConsumerState<SketchScreen> {
                 size: Size.infinite,
               );
             },
-            loading: () => const Center(child: CircularProgressIndicator()),
-
-            error: (error, stack) => Center(child: Text('Error: $error')),
           ),
         ],
       ),

@@ -4,6 +4,7 @@ import 'package:hs_coaching_screen/common/widgets/clock.dart';
 import 'package:hs_coaching_screen/common/widgets/club_logo.dart';
 import 'package:hs_coaching_screen/common/widgets/sync_lost_indicator.dart';
 import 'package:hs_coaching_screen/data/providers/global_settings_provider.dart';
+import 'package:hs_coaching_screen/common/widgets/async_content.dart';
 
 class Background extends ConsumerWidget {
   const Background({super.key});
@@ -12,7 +13,9 @@ class Background extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final globalSetting = ref.watch(globalSettingsProvider);
 
-    return globalSetting.when(
+    return AsyncContent(
+      value: globalSetting,
+      showErrorBadge: false, // al getoond door DisplayLimits
       data: (settings) => Stack(
         children: [
           // Clublogo
@@ -63,8 +66,6 @@ class Background extends ConsumerWidget {
           ),
         ],
       ),
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stackTrace) => Center(child: Text('Error: $error')),
     );
   }
 }

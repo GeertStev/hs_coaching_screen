@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hs_coaching_screen/data/providers/global_settings_provider.dart';
+import 'package:hs_coaching_screen/common/widgets/async_content.dart';
 
 class ClubLogo extends ConsumerWidget {
   final double? maxWidth;
@@ -39,7 +40,9 @@ class ClubLogo extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final globalSettings = ref.watch(globalSettingsProvider);
 
-    return globalSettings.when(
+    return AsyncContent(
+      value: globalSettings,
+      showErrorBadge: false, // al getoond door DisplayLimits
       data: (settings) {
         return SizedBox(
           width: maxWidth,
@@ -76,16 +79,6 @@ class ClubLogo extends ConsumerWidget {
         width: maxWidth,
         height: maxHeight,
         child: const Center(child: CircularProgressIndicator()),
-      ),
-      error: (error, stackTrace) => SizedBox(
-        width: maxWidth,
-        height: maxHeight,
-        child: Center(
-          child: Text(
-            'Error loading logo: $error',
-            style: const TextStyle(color: Colors.red),
-          ),
-        ),
       ),
     );
   }

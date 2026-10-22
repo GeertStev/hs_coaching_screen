@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hs_coaching_screen/data/providers/global_settings_provider.dart';
 
 import 'package:hs_coaching_screen/features/main_screen.dart';
+import 'package:hs_coaching_screen/common/widgets/async_content.dart';
 
 class DisplayLimits extends ConsumerWidget {
   const DisplayLimits({super.key});
@@ -13,7 +14,8 @@ class DisplayLimits extends ConsumerWidget {
     final globalSettings = ref.watch(globalSettingsProvider);
 
     return Scaffold(
-      body: globalSettings.when(
+      body: AsyncContent(
+        value: globalSettings,
         data: (settings) {
           double screenWidth = settings.screenWidth.toDouble();
           double screenHeight = settings.screenHeight.toDouble();
@@ -38,13 +40,6 @@ class DisplayLimits extends ConsumerWidget {
             ),
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => Center(
-          child: Text(
-            'Error loading global settings: $error',
-            style: const TextStyle(color: Colors.red, fontSize: 24),
-          ),
-        ),
       ),
     );
   }

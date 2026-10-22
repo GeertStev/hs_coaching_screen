@@ -37,7 +37,8 @@ lib/
   - `DisplayContentSettings` (`settings/content`, which content type is showing) is this repo's own
     Freezed model; regenerate with build_runner after touching it.
 - `ContentSwitcher` maps each `DisplayContentType` to one screen widget; add a case for a new type.
-- `TrainingScreenController` mirrors the app's controller but **never calls `next()`**: it reads
-  `autoAdvanceDue` informationally only.
+- `TrainingScreenController` mirrors the app's controller: it derives progress with core's
+  `trainingProgressAt` (anchor + elapsed time), so timed steps advance here without waiting for the
+  tablet. It never writes.
 - `SyncLostIndicator` shows when core's `serverConnectionProvider` (RTDB `.info/connected`) goes
   false, as a proxy for stale Firestore listeners.

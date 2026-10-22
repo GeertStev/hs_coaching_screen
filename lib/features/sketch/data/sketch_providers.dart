@@ -20,12 +20,7 @@ final sketchRepositoryProvider = Provider<DisplaySketchRepositoryBase>((ref) {
 });
 
 final currentSketchIdDocProvider = StreamProvider.autoDispose<String?>((ref) {
-  return ref.watch(sketchRepositoryProvider).watchCurrentSketchIdDoc().map((
-    snapshot,
-  ) {
-    final data = snapshot.data() as Map<String, dynamic>?;
-    return data?['currentId'] as String?;
-  });
+  return ref.watch(sketchRepositoryProvider).watchCurrentSketchId();
 });
 
 /// Streamt de actieve sketch. Schakelt via `switchMap` live over naar het
@@ -37,9 +32,7 @@ final currentSketchIdDocProvider = StreamProvider.autoDispose<String?>((ref) {
 final currentSketchProvider = StreamProvider.autoDispose<Sketch?>((ref) {
   final repository = ref.watch(sketchRepositoryProvider);
   ref.watch(displayDeviceIdsProvider);
-  return repository.watchCurrentSketchIdDoc().switchMap((snapshot) {
-    final data = snapshot.data() as Map<String, dynamic>?;
-    final sketchId = data?['currentId'] as String?;
+  return repository.watchCurrentSketchId().switchMap((sketchId) {
     if (sketchId == null) {
       return Stream.value(null);
     }

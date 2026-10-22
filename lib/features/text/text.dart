@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hs_coaching_screen/common/widgets/async_content.dart';
 import 'package:hs_coaching_screen/common/widgets/club_logo.dart';
 import 'package:hs_coaching_core/global_settings/display_global_settings.dart';
 import 'package:hs_coaching_screen/data/providers/global_settings_provider.dart';
@@ -30,21 +31,14 @@ class TextDisplay extends ConsumerWidget {
             alignment: Alignment.bottomRight,
             child: ClubLogo(maxHeight: 200, greyscale: true, opacity: 0.25),
           ),
-          switch ((text, globalSettings)) {
-            (AsyncError(), _) || (_, AsyncError()) => Center(
-              child: Icon(
-                Icons.error_outline,
-                color: Theme.of(context).colorScheme.error,
-                size: 72,
-              ),
+          AsyncContent(
+            value: text,
+            data: (displayText) => AsyncContent(
+              value: globalSettings,
+              showErrorBadge: false, // al getoond door DisplayLimits
+              data: (settings) => _buildContent(context, displayText, settings),
             ),
-            (
-              AsyncData(value: final displayText),
-              AsyncData(value: final settings),
-            ) =>
-              _buildContent(context, displayText, settings),
-            _ => const Center(child: CircularProgressIndicator()),
-          },
+          ),
         ],
       ),
     );

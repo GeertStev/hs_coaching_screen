@@ -40,5 +40,8 @@ lib/
 - `TrainingScreenController` mirrors the app's controller: it derives progress with core's
   `trainingProgressAt` (anchor + elapsed time), so timed steps advance here without waiting for the
   tablet. It never writes.
+- Render every `AsyncValue` through `AsyncContent` (`common/widgets/async_content.dart`), never
+  `.when(error: ...)` with the raw error: it keeps the last good content on error, shows
+  `userMessage` otherwise, and reloads the page after 5 minutes of a visible error.
 - `SyncLostIndicator` shows when core's `serverConnectionProvider` (RTDB `.info/connected`) goes
   false, as a proxy for stale Firestore listeners.

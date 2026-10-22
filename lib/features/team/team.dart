@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hs_coaching_core/team/team_repository.dart';
 import 'package:hs_coaching_screen/features/team/data/team_repository.dart';
 import 'package:hs_coaching_screen/features/team/presentation/position_row.dart';
+import 'package:hs_coaching_screen/common/widgets/async_content.dart';
 
 /// A widget to display the team compositions, fetched via a provider.
 class TeamDisplay extends ConsumerWidget {
@@ -12,7 +13,8 @@ class TeamDisplay extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(teamUpdateListenerProvider);
     final teamsAsync = ref.watch(teamsProvider);
-    return teamsAsync.when(
+    return AsyncContent(
+      value: teamsAsync,
       skipLoadingOnRefresh: false,
       data: (teams) {
         final whiteTeam = teams[0];
@@ -54,7 +56,6 @@ class TeamDisplay extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: LinearProgressIndicator()),
-      error: (err, stack) => Center(child: Text('Error: $err')),
     );
   }
 }

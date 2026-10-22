@@ -12,6 +12,7 @@ import 'package:hs_coaching_screen/features/team/team.dart';
 import 'package:hs_coaching_screen/features/image/image.dart';
 import 'package:hs_coaching_screen/features/text/text.dart';
 import 'package:hs_coaching_screen/features/training/presentation/training_screen.dart';
+import 'package:hs_coaching_screen/common/widgets/async_content.dart';
 
 /// A widget that only rebuilds when the content settings change.
 class ContentSwitcher extends ConsumerWidget {
@@ -28,16 +29,7 @@ class ContentSwitcher extends ConsumerWidget {
     // Watch the provider that streams dynamic content settings.
     final contentSettings = ref.watch(contentSettingsProvider);
 
-    return contentSettings.when(
-      data: (content) => _buildContent(content),
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Text(
-          'Error loading content: $error',
-          style: const TextStyle(color: Colors.red, fontSize: 24),
-        ),
-      ),
-    );
+    return AsyncContent(value: contentSettings, data: _buildContent);
   }
 
   /// Builds the specific content widget based on the contentType.

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hs_coaching_screen/features/image/data/image_repository.dart';
+import 'package:hs_coaching_screen/common/widgets/async_content.dart';
 
 class ImageDisplay extends ConsumerWidget {
   const ImageDisplay({super.key});
@@ -22,7 +23,8 @@ class ImageDisplay extends ConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Center(
-          child: image.when(
+          child: AsyncContent(
+            value: image,
             data: (imageModel) {
               return imageModel == null || imageModel.url.isEmpty
                   ? Text("Image", style: Theme.of(context).textTheme.titleLarge)
@@ -43,14 +45,6 @@ class ImageDisplay extends ConsumerWidget {
                         );
                       },
                     );
-            },
-            loading: () => CircularProgressIndicator(),
-            error: (error, stack) {
-              return Icon(
-                Icons.error_outline,
-                color: Theme.of(context).colorScheme.error,
-                size: 72,
-              );
             },
           ),
         ),

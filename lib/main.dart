@@ -4,15 +4,24 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hs_coaching_core/core/errors/error_reporting.dart';
+import 'package:hs_coaching_core/core/providers/riverpod_config.dart';
 
 import 'package:hs_coaching_screen/common/theme/app_theme.dart';
 import 'package:hs_coaching_screen/features/display_limits.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  installGlobalErrorHandlers();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(const ProviderScope(child: MainApp()));
+  runApp(
+    const ProviderScope(
+      retry: appProviderRetry,
+      observers: [AppProviderObserver()],
+      child: MainApp(),
+    ),
+  );
 }
 
 class MainApp extends ConsumerWidget {

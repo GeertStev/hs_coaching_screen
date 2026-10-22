@@ -6,7 +6,7 @@ import 'package:hs_coaching_core/global_settings/display_global_settings.dart';
 import 'package:hs_coaching_screen/data/providers/global_settings_provider.dart';
 import 'package:hs_coaching_screen/features/text/data/text_repository.dart';
 import 'package:hs_coaching_core/text/display_text.dart';
-import 'package:hs_coaching_core/text/text_markup_span.dart';
+import 'package:hs_coaching_core/text/text_markup_view.dart';
 
 class TextDisplay extends ConsumerWidget {
   const TextDisplay({super.key});
@@ -80,24 +80,23 @@ class TextDisplay extends ConsumerWidget {
                 ],
                 Expanded(
                   child: SingleChildScrollView(
-                    child: Text.rich(
-                      buildTextMarkupSpan(
-                        displayText.text,
-                        bodyStyle: _bodyStyle,
-                        heading1Style: _bodyStyle.copyWith(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Anybody',
-                          color: ColorScheme.of(context).onSurface,
-                          height: 1.4,
-                        ),
-                        heading2Style: _bodyStyle.copyWith(
-                          fontSize: 23,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Anybody',
-                          color: ColorScheme.of(context).onSurface,
-                          height: 1.4,
-                        ),
+                    child: TextMarkupView(
+                      displayText.text,
+                      lineColor: const Color(0x80C8C6C5),
+                      bodyStyle: _bodyStyle,
+                      heading1Style: _bodyStyle.copyWith(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Anybody',
+                        color: ColorScheme.of(context).onSurface,
+                        height: 1.4,
+                      ),
+                      heading2Style: _bodyStyle.copyWith(
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Anybody',
+                        color: ColorScheme.of(context).onSurface,
+                        height: 1.4,
                       ),
                     ),
                   ),

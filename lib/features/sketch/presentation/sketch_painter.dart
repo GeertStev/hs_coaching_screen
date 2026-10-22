@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 //import 'dart:ui' as ui;
 import 'package:hs_coaching_core/sketch/sketch_element.dart';
+import 'package:hs_coaching_core/sketch/sketch_geometry.dart';
 
 class SketchPainter extends CustomPainter {
   const SketchPainter({
@@ -116,30 +117,27 @@ class SketchPainter extends CustomPainter {
         final localEnd = _scaleToLocal(end);
         canvas.drawLine(localStart, localEnd, paint);
 
-      case RectangleElement(
-        :final start,
-        :final end,
-        :final color,
-        :final strokeWidth,
-        :final fillColor,
-      ):
+      case RectangleElement(:final color, :final strokeWidth, :final fillColor):
         final paint = Paint()
           ..strokeCap = StrokeCap.round
           ..strokeJoin = StrokeJoin.round;
 
-        final localStart = _scaleToLocal(start);
-        final localEnd = _scaleToLocal(end);
-        final rect = Rect.fromPoints(localStart, localEnd);
+        // Hoekpunten via core, zodat een gedraaide rechthoek klopt met de app
+        final path = Path()
+          ..addPolygon(
+            rectangleCorners(element).map(_scaleToLocal).toList(),
+            true,
+          );
         if (fillColor != null) {
           paint
             ..style = PaintingStyle.fill
             ..color = fillColor;
-          canvas.drawRect(rect, paint);
+          canvas.drawPath(path, paint);
         }
         paint.style = PaintingStyle.stroke;
         paint.color = color;
         paint.strokeWidth = _scaleValueToLocal(strokeWidth.toDouble());
-        canvas.drawRect(rect, paint);
+        canvas.drawPath(path, paint);
 
       case PolygonElement(
         :final points,

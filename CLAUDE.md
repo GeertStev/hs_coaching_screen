@@ -37,6 +37,12 @@ lib/
   - `DisplayContentSettings` (`settings/content`, which content type is showing) is this repo's own
     Freezed model; regenerate with build_runner after touching it.
 - `ContentSwitcher` maps each `DisplayContentType` to one screen widget; add a case for a new type.
+- Training uses the pool-display design (`docs/pool-display-spec.md`): `training/presentation/pool/`
+  draws a fixed 624×416 canvas that `TrainingScreen` scales into the content area. Colours and fonts
+  only via `PoolDisplayTheme` (tokens, registered in `AppTheme`), sizes only via `PoolLayout`; never
+  hardcode either in a widget. Data comes from core's `lib/training/display/`. Goldens in
+  `test/features/training/presentation/pool/goldens/` (`flutter test --update-goldens` after a
+  deliberate visual change).
 - `TrainingScreenController` mirrors the app's controller: it derives progress with core's
   `trainingProgressAt` (anchor + elapsed time), so timed steps advance here without waiting for the
   tablet. It never writes.

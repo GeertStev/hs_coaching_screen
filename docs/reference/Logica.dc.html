@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Logica platte stappenlijst</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@500;600;700&display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width:1328px;height:416px;box-sizing:border-box;background:#08161F;color:#F4FAFC;font-family:'Barlow',system-ui,sans-serif;padding:24px;display:flex;gap:24px;overflow:hidden">
+
+  <div style="width:280px;flex:none;box-sizing:border-box;background:#0F2531;border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:8px">
+    <div style="font-size:13px;font-weight:700;letter-spacing:.12em;color:#9DB6C2">1 · STRUCTUUR VAN DE COACH</div>
+    <div style="display:flex;justify-content:space-between;font-size:17px;font-weight:700"><span>Warmup</span><span style="color:#9DB6C2">×1</span></div>
+    <div style="padding-left:16px;font-size:15px;color:#9DB6C2;font-weight:500">4 lijnen, één timer</div>
+    <div style="display:flex;justify-content:space-between;font-size:17px;font-weight:700"><span>Set</span><span style="color:#9DB6C2">×2</span></div>
+    <div style="padding-left:16px;display:flex;justify-content:space-between;font-size:16px;font-weight:600"><span>Group split</span><span style="color:#9DB6C2">×1</span></div>
+    <div style="padding-left:32px;font-size:15px;color:#9DB6C2;font-weight:500">per groep: eigen timer, 2 lijnen</div>
+    <div style="padding-left:16px;display:flex;justify-content:space-between;font-size:16px;font-weight:600"><span>Subset</span><span style="color:#9DB6C2">×2</span></div>
+    <div style="padding-left:32px;display:flex;justify-content:space-between;font-size:15px;font-weight:600"><span>Oefening 1 d−</span><span style="color:#9DB6C2">×2 · Δ −5s</span></div>
+    <div style="padding-left:32px;display:flex;justify-content:space-between;font-size:15px;font-weight:600"><span>Oefening 2 d+</span><span style="color:#9DB6C2">×2 · Δ +5s</span></div>
+    <div style="margin-top:auto;font-size:15px;line-height:1.35;color:#CFE0E8">Afvlakken geeft <b style="color:#FF9F43">19 stappen</b>. Eén stap is één herhaling van een oefening, met alle lijnen tegelijk in beeld.</div>
+  </div>
+
+  <div style="width:520px;flex:none;box-sizing:border-box;background:#0F2531;border-radius:14px;padding:16px 12px;display:flex;flex-direction:column;gap:5px">
+    <div style="font-size:13px;font-weight:700;letter-spacing:.12em;color:#9DB6C2;padding:0 6px 4px">2 · STAPPENLIJST MET OVERGANG NAAR DE VOLGENDE STAP</div>
+
+    <div style="display:grid;grid-template-columns:56px 36px 52px 52px 52px 52px 1fr;column-gap:6px;align-items:center;padding:0 6px;font-size:13px;font-weight:700;letter-spacing:.06em;color:#9DB6C2">
+      <span></span><span>#</span><span>SET</span><span>SUB</span><span>OEF</span><span>HERH</span><span>OVERGANG</span>
+    </div>
+
+    <div style="display:grid;grid-template-columns:56px 36px 52px 52px 52px 52px 1fr;column-gap:6px;align-items:center;height:28px;padding:0 6px;font-size:16px;font-weight:600;color:#CFE0E8">
+      <span></span><span>3</span><span>1</span><span>1</span><span>1</span><span>1</span><span style="color:#9DB6C2">volgende herhaling</span>
+    </div>
+    <div style="display:grid;grid-template-columns:56px 36px 52px 52px 52px 52px 1fr;column-gap:6px;align-items:center;height:30px;padding:0 6px;border-radius:8px;background:#12394A;font-size:16px;font-weight:700">
+      <span style="font-size:11px;letter-spacing:.1em;color:#FF9F43">NU</span><span>4</span><span>1</span><span>1</span><span>1</span><span>2</span><span style="color:#B79BFF">nieuwe oefening</span>
+    </div>
+    <div style="display:grid;grid-template-columns:56px 36px 52px 52px 52px 52px 1fr;column-gap:6px;align-items:center;height:30px;padding:0 6px;border-radius:8px;border:1.5px dashed #B79BFF;box-sizing:border-box;font-size:16px;font-weight:700">
+      <span style="font-size:11px;letter-spacing:.1em;color:#B79BFF">DAARNA</span><span>5</span><span>1</span><span>1</span><span>2</span><span>1</span><span style="color:#9DB6C2;font-weight:600">volgende herhaling</span>
+    </div>
+    <div style="display:grid;grid-template-columns:56px 36px 52px 52px 52px 52px 1fr;column-gap:6px;align-items:center;height:28px;padding:0 6px;font-size:16px;font-weight:600;color:#CFE0E8">
+      <span></span><span>6</span><span>1</span><span>1</span><span>2</span><span>2</span><span style="color:#B79BFF;font-weight:700">↻ subset opnieuw</span>
+    </div>
+    <div style="height:18px;padding:0 6px;color:#6F8C99;font-size:16px;letter-spacing:.3em">⋯</div>
+    <div style="display:grid;grid-template-columns:56px 36px 52px 52px 52px 52px 1fr;column-gap:6px;align-items:center;height:30px;padding:0 6px;border-radius:8px;background:#12394A;font-size:16px;font-weight:700">
+      <span style="font-size:11px;letter-spacing:.1em;color:#FF9F43">NU</span><span>10</span><span>1</span><span>2</span><span>2</span><span>2</span><span style="color:#B79BFF">↻ set opnieuw</span>
+    </div>
+    <div style="display:grid;grid-template-columns:56px 36px 52px 52px 52px 52px 1fr;column-gap:6px;align-items:center;height:30px;padding:0 6px;border-radius:8px;border:1.5px dashed #B79BFF;box-sizing:border-box;font-size:16px;font-weight:700">
+      <span style="font-size:11px;letter-spacing:.1em;color:#B79BFF">DAARNA</span><span>11</span><span>2</span><span style="color:#9DB6C2">–</span><span style="font-size:14px">GS</span><span style="color:#9DB6C2">–</span><span style="color:#9DB6C2;font-weight:600">nieuwe subset</span>
+    </div>
+    <div style="height:18px;padding:0 6px;color:#6F8C99;font-size:16px;letter-spacing:.3em">⋯</div>
+    <div style="display:grid;grid-template-columns:56px 36px 52px 52px 52px 52px 1fr;column-gap:6px;align-items:center;height:28px;padding:0 6px;font-size:16px;font-weight:600;color:#CFE0E8">
+      <span></span><span>19</span><span>2</span><span>2</span><span>2</span><span>2</span><span style="color:#FF9F43;font-weight:700">klaar ✓</span>
+    </div>
+  </div>
+
+  <div style="flex:1;min-width:0;box-sizing:border-box;background:#0F2531;border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:9px">
+    <div style="font-size:13px;font-weight:700;letter-spacing:.12em;color:#9DB6C2">3 · REGELS VOOR HET SCHERM</div>
+    <div style="font-size:15px;line-height:1.35;color:#E6F1F5"><b style="color:#FF9F43">Altijd twee dingen:</b> stap n groot (oranje = nu), stap n+1 in de DAARNA-kaart (violet = straks).</div>
+    <div style="font-size:15px;line-height:1.35;color:#E6F1F5"><b>Geen voortgang binnen een oefening.</b> Alle lijnen staan er tegelijk, de speler verdeelt zijn werktijd zelf.</div>
+    <div style="font-size:15px;line-height:1.35;color:#E6F1F5"><b style="color:#B79BFF">Overgang = hoogste niveau dat verandert.</b> Alleen dat niveau krijgt een violet bolletje. ↻ betekent hetzelfde blok opnieuw, met de eerste stap van de nieuwe ronde in DAARNA.</div>
+    <div style="font-size:15px;line-height:1.35;color:#E6F1F5"><b>Herhaling krijgt een track bij de timer:</b> ✓ gedaan, ● nu, ○ nog te komen, elk met zijn werktijd. Werktijd = basis + (n − 1) × Δ, rust blijft gelijk.</div>
+    <div style="font-size:15px;line-height:1.35;color:#E6F1F5"><b>Elke lijn dezelfde 5 kolommen:</b> aantal, afstand, techniek, inspanning (– als leeg), omgeving. <b>Group split:</b> per groep eigen timer en eigen lijnen.</div>
+    <div style="font-size:15px;line-height:1.35;color:#E6F1F5"><b>Banen:</b> subtiel rechtsboven, gedaan / totaal, geteld bij het begin van de oefening. Na de laatste stap volgt één KLAAR-scherm.</div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1328,"height":416}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

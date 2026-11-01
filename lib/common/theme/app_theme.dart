@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:hs_coaching_screen/features/training/presentation/pool/pool_display_theme.dart';
 
 class AppTheme {
   AppTheme._();
 
   static final ThemeData darkTheme = ThemeData(
     useMaterial3: true,
+    extensions: const [PoolDisplayTheme.standard],
     //scaffoldBackgroundColor: const Color.fromARGB(255, 0, 51, 170),
     colorScheme: ColorScheme(
       brightness: Brightness.dark,

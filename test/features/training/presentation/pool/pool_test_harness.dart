@@ -50,12 +50,14 @@ class TolerantGoldenComparator extends LocalFileComparator {
   }
 }
 
-/// Zet het scherm op het ontwerpcanvas (624×416) met [position].
+/// Zet het scherm op een canvas van [width]×416 (standaard het ontwerp,
+/// 624) met [position].
 Future<void> pumpPoolView(
   WidgetTester tester,
-  TrainingDisplayPosition position,
-) async {
-  tester.view.physicalSize = const Size(PoolLayout.width, PoolLayout.height);
+  TrainingDisplayPosition position, {
+  double width = PoolLayout.designWidth,
+}) async {
+  tester.view.physicalSize = Size(width, PoolLayout.height);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
   await tester.pumpWidget(
@@ -65,7 +67,9 @@ Future<void> pumpPoolView(
         useMaterial3: true,
         extensions: const [PoolDisplayTheme.standard],
       ),
-      home: Scaffold(body: PoolTrainingView(position: position)),
+      home: Scaffold(
+        body: PoolTrainingView(position: position, width: width),
+      ),
     ),
   );
 }

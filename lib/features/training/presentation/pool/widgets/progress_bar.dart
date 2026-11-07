@@ -35,12 +35,14 @@ class TrainingProgressBar extends StatelessWidget {
     final weights = _Weights(math.max(1, total * _minShare));
     return SizedBox(
       height: PoolLayout.progressHeight,
-      child: Center(
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: SizedBox(
-            width: PoolLayout.width - 2 * PoolLayout.padSide,
-            child: _ItemRow(items: items, weights: weights, gap: _gap),
+      child: LayoutBuilder(
+        builder: (context, constraints) => Center(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: SizedBox(
+              width: constraints.maxWidth,
+              child: _ItemRow(items: items, weights: weights, gap: _gap),
+            ),
           ),
         ),
       ),

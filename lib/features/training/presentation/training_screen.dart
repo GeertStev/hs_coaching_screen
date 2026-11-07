@@ -28,21 +28,28 @@ final trainingDisplayPositionProvider = Provider<TrainingDisplayPosition>((
   );
 });
 
-/// Training op het zwembadscherm: het vaste ontwerpcanvas (624×416) schaalt
-/// als geheel in het content-vak, zodat de layout overal identiek blijft.
+/// Training op het zwembadscherm: een canvas van 416 hoog met de breedte
+/// volgens de verhouding van het content-vak (`PoolLayout.canvasWidthFor`),
+/// als geheel geschaald naar de echte grootte. Volgt dus vanzelf elke
+/// afmeting uit de instellingen (content-vak of later fullscreen).
 class TrainingScreen extends ConsumerWidget {
   const TrainingScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final position = ref.watch(trainingDisplayPositionProvider);
-    return FittedBox(
-      fit: BoxFit.contain,
-      child: SizedBox(
-        width: PoolLayout.width,
-        height: PoolLayout.height,
-        child: PoolTrainingView(position: position),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = PoolLayout.canvasWidthFor(constraints.biggest);
+        return FittedBox(
+          fit: BoxFit.contain,
+          child: SizedBox(
+            width: width,
+            height: PoolLayout.height,
+            child: PoolTrainingView(position: position, width: width),
+          ),
+        );
+      },
     );
   }
 }

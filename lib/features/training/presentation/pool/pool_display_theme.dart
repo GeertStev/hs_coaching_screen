@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 class PoolDisplayTheme extends ThemeExtension<PoolDisplayTheme> {
   const PoolDisplayTheme({
     required this.background,
+    required this.frame,
     required this.surface,
     required this.surfaceRow,
     required this.rowBorder,
@@ -49,41 +50,46 @@ class PoolDisplayTheme extends ThemeExtension<PoolDisplayTheme> {
     this.numberFontFamily,
   });
 
-  /// Huidige (voorlopige) waarden uit het ontwerp.
+  /// Afgestemd op de rest van het scherm en de app (2026-11-07): neutrale
+  /// grijze vlakken zoals de chrono/tabata-kaders en `AppColorsDark` van de
+  /// app, goud (`#FEBA2F`, app `secondary`) voor "nu" en werk, lichtblauw
+  /// (app `primary`) voor rust, clubblauw (`#0033AA`) voor onder water, een
+  /// gouden kader zoals de chrono. Geen groen (app-regel).
   static const standard = PoolDisplayTheme(
-    background: Color(0xFF08161F),
-    surface: Color(0xFF0F2531),
-    surfaceRow: Color(0xFF12394A),
-    rowBorder: Color(0xFF2A4B5C),
-    nextSurface: Color(0xFF0B1D28),
-    nextBorder: Color(0xFF1F3C4C),
-    nextRow: Color(0xFF102B3A),
-    chipSurface: Color(0xFF163545),
-    chipBorder: Color(0xFF3C6276),
-    chipBorderStrong: Color(0xFF5B8196),
-    textPrimary: Color(0xFFF4FAFC),
-    textSecondary: Color(0xFFCFE0E8),
-    textMuted: Color(0xFF9DB6C2),
-    textFaint: Color(0xFF6F8C99),
-    nextRowText: Color(0xFFDCEBF1),
-    now: Color(0xFFFF9F43),
-    next: Color(0xFFB79BFF),
-    work: Color(0xFF3EE0D0),
-    onWork: Color(0xFF06222B),
-    rest: Color(0xFF7CC4FF),
-    onRest: Color(0xFF06182E),
-    paused: Color(0xFF9DB6C2),
-    onPaused: Color(0xFF08161F),
-    done: Color(0xFF3A5F70),
-    doneCheck: Color(0xFFDCEBF1),
-    upcoming: Color(0xFF5B8196),
-    progressTrack: Color(0xFF163545),
-    envAbove: Color(0xFF1C4256),
-    onEnvAbove: Color(0xFFCFE9F2),
-    envUnder: Color(0xFF274AA8),
+    background: Color(0xFF1E2020),
+    frame: Color(0xFFEDBA20),
+    surface: Color(0xFF2A2B2E),
+    surfaceRow: Color(0xFF333535),
+    rowBorder: Color(0xFF444653),
+    nextSurface: Color(0xFF1A1C1C),
+    nextBorder: Color(0xFF333535),
+    nextRow: Color(0xFF282A2B),
+    chipSurface: Color(0xFF282A2B),
+    chipBorder: Color(0xFF444653),
+    chipBorderStrong: Color(0xFF8E909F),
+    textPrimary: Color(0xFFF2F2F2),
+    textSecondary: Color(0xFFC4C5D6),
+    textMuted: Color(0xFF8E909F),
+    textFaint: Color(0xFF63656F),
+    nextRowText: Color(0xFFE2E2E2),
+    now: Color(0xFFFEBA2F),
+    next: Color(0xFFB7C4FF),
+    work: Color(0xFFFEBA2F),
+    onWork: Color(0xFF422C00),
+    rest: Color(0xFFB7C4FF),
+    onRest: Color(0xFF002583),
+    paused: Color(0xFF8E909F),
+    onPaused: Color(0xFF121414),
+    done: Color(0xFF5C5E6A),
+    doneCheck: Color(0xFFE2E2E2),
+    upcoming: Color(0xFF8E909F),
+    progressTrack: Color(0xFF333535),
+    envAbove: Color(0xFF282A2B),
+    onEnvAbove: Color(0xFFDDE1FF),
+    envUnder: Color(0xFF0033AA),
     onEnvUnder: Color(0xFFFFFFFF),
-    envUnderBorder: Color(0xFF5B82E0),
-    groupColors: [Color(0xFFB3341F), Color(0xFF1F7A4D)],
+    envUnderBorder: Color(0xFF3354C8),
+    groupColors: [Color(0xFFB3261E), Color(0xFF0F3AB0)],
     onGroup: Color(0xFFFFFFFF),
   );
 
@@ -91,6 +97,9 @@ class PoolDisplayTheme extends ThemeExtension<PoolDisplayTheme> {
       Theme.of(context).extension<PoolDisplayTheme>() ?? standard;
 
   final Color background;
+
+  /// Kader rond het hele canvas (zoals de chrono- en tabata-kaders).
+  final Color frame;
 
   /// Timervak, kruimelchips.
   final Color surface;
@@ -191,6 +200,7 @@ class PoolDisplayTheme extends ThemeExtension<PoolDisplayTheme> {
     String? numberFontFamily,
   }) => PoolDisplayTheme(
     background: background ?? this.background,
+    frame: frame,
     surface: surface ?? this.surface,
     surfaceRow: surfaceRow,
     rowBorder: rowBorder,

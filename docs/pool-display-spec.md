@@ -230,3 +230,15 @@ Kleur mag niet de enige drager van betekenis zijn: "nu / straks / gedaan" versch
 4. Widgets in deze volgorde: lijnrij, specificatierij, kruimelchip, herhalingstrack, timervak, Daarna-kaart, schermen. Dan de group split.
 5. Golden tests en de open punten uit §6 oplossen of expliciet laten staan.
 6. Aansluiten op de bestaande chronometer (gedeelde Firebase-tijd) zodat timers en stap-overgangen op elk scherm gelijk lopen.
+
+---
+
+## 10. Herwerking 2026-11-07 (vervangt delen van §3.2–§4.6)
+
+Op vraag van de eigenaar, na de eerste versie:
+
+- **Voortgangsbalk** in plaats van de kruimelrij: één balkje per oefening, een kader per set/subset, **niet uitgerold** (een subset 3× staat er één keer). Onder elk element `x/y`: 0 = nog niet begonnen, de lopende ronde, `y` = af; de tellers binnen een groep resetten bij een nieuwe ronde. Breedte volgens het aantal banen (oefening: banen van al haar herhalingen; groep: som van de kinderen), met een minimumbreedte. Core: `buildProgressBar` in `lib/training/display/display_progress.dart`.
+- **Weg:** kruimelpad (de widget `BreadcrumbRow` blijft in de code, ongebruikt), titels, banenteller en de dunne balk bovenaan, de specificatierij, de herhalingstrack, overgangspills.
+- **Timervak:** fase-pill, timer, en onderaan de herhaling als `x/y` (ook `1/1`) met daarnaast `W: 00:05 (−5s)` (werk van déze herhaling, delta enkel als die er is) en `R: 00:10`. Group split: per groep een vak met groepspill, `x/y`, fase-pill, timer en W/R.
+- **Lijnen:** vaste rijhoogte alsof er 5 lijnen zijn; minder lijnen staan bovenaan, pas vanaf 6 lijnen worden de rijen kleiner.
+- **Onderste vak:** één breed vak met de **volgende oefening** (de herhalingen van de huidige overgeslagen, `TrainingDisplayPosition.nextExercise`) in haar eerste herhaling: `N×`, W/R en de lijnen (5 plaatsen, niet groter bij minder lijnen). Oranje rand (`now`) bij de laatste herhaling van de huidige oefening. Na de laatste oefening: `END`. Group split: twee helften.

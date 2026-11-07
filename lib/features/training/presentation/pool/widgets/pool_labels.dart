@@ -15,6 +15,7 @@ abstract final class PoolLabels {
   static const waitingForStart = 'Waiting for the coach to start';
   static const trainingDone = 'Training done';
   static const start = 'Start';
+  static const end = 'END';
 
   static String lengths(int done, int total) => '$done / $total laps';
 
@@ -50,3 +51,20 @@ String formatDelta(int deltaSeconds) {
   final sign = deltaSeconds < 0 ? '−' : '+';
   return 'Δ $sign${deltaSeconds.abs()}s';
 }
+
+/// `W: 00:05 (−5s)`: werktijd van deze herhaling, met de delta als die er
+/// is; leeg als de stap ongetimed is.
+String formatWorkLine(int workSeconds, int deltaSeconds) {
+  if (workSeconds <= 0) return '';
+  final delta = deltaSeconds == 0
+      ? ''
+      : ' (${deltaSeconds < 0 ? '−' : '+'}${deltaSeconds.abs()}s)';
+  return 'W: ${formatTimer(workSeconds)}$delta';
+}
+
+/// `R: 00:10`; leeg als de stap ongetimed is.
+String formatRestLine(int workSeconds, int restSeconds) =>
+    workSeconds <= 0 ? '' : 'R: ${formatTimer(restSeconds)}';
+
+/// `1/2`: herhaling (1-gebaseerd) van het aantal.
+String formatCounter(int value, int count) => '$value/$count';

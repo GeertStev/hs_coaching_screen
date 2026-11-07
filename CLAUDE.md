@@ -40,7 +40,9 @@ lib/
 - Training uses the pool-display design (`docs/pool-display-spec.md`): `training/presentation/pool/`
   draws a fixed 624×416 canvas that `TrainingScreen` scales into the content area. Colours and fonts
   only via `PoolDisplayTheme` (tokens, registered in `AppTheme`), sizes only via `PoolLayout`; never
-  hardcode either in a widget. Data comes from core's `lib/training/display/`. Goldens in
+  hardcode either in a widget. Data comes from core's `lib/training/display/`. Layout since
+  2026-11-07 (spec §10): progress bar (`progress_bar.dart`), timer box with `x/y` + W/R, fixed-height
+  lines (5 slots), wide `UpcomingCard`; `BreadcrumbRow` is kept but not shown. Goldens in
   `test/features/training/presentation/pool/goldens/` (`flutter test --update-goldens` after a
   deliberate visual change).
 - `TrainingScreenController` mirrors the app's controller: it derives progress with core's

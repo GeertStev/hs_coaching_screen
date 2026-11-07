@@ -1,12 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hs_coaching_core/training/display/display_transition.dart';
 import 'package:hs_coaching_core/training/training_status.dart';
 import 'package:hs_coaching_screen/features/training/presentation/pool/pool_training_view.dart';
 import 'package:hs_coaching_screen/features/training/presentation/pool/widgets/breadcrumb.dart';
 import 'package:hs_coaching_screen/features/training/presentation/pool/widgets/level_dots.dart';
 import 'package:hs_coaching_screen/features/training/presentation/pool/widgets/line_row.dart';
-import 'package:hs_coaching_screen/features/training/presentation/pool/widgets/next_card.dart';
+import 'package:hs_coaching_screen/features/training/presentation/pool/widgets/upcoming_card.dart';
 import 'package:hs_coaching_screen/features/training/presentation/pool/widgets/timer_box.dart';
 
 import 'pool_fixtures.dart';
@@ -18,10 +17,14 @@ final _scenes = {
   'step01_warmup': () => examplePosition(0, 3),
   // stap 2: group split, 6 s ver → Hard nog 9, Easy nog 4
   'step02_group_split': () => examplePosition(1, 6),
+  // stap 3: oefening 1 d−, herhaling 1 → onderste vak niet gehighlight
+  'step03_first_repetition': () => examplePosition(2, 2),
   // stap 4: oefening 1 d−, herhaling 2 (5 s werk), 2 s ver → nog 3
   'step04_exercise': () => examplePosition(3, 2),
   // stap 10: oefening 2 d+, herhaling 2 (15 s werk), rust nog 4 s
   'step10_rest_set_again': () => examplePosition(9, 21),
+  // stap 18: laatste herhaling van de laatste oefening → END
+  'step19_last': () => examplePosition(18, 2),
   'before_start': () => examplePosition(-1, 0, status: TrainingStatus.idle),
   'finished': () => examplePosition(19, 0),
 };
@@ -79,37 +82,58 @@ void main() {
   });
 
   testWidgets(
-    'repeatSet: Daarna toont de group split van set 2, SET krijgt ↻',
+    'laatste herhaling: onderste vak gehighlight met de volgende oefening',
     (tester) async {
-      final position = examplePosition(9, 21);
-      expect(position.transition, DisplayTransition.repeatSet);
-
-      await pumpPoolView(tester, position);
-      final nextCard = find.byType(NextCard);
+      // stap 10: laatste herhaling van de subset; daarna de group split.
+      await pumpPoolView(tester, examplePosition(9, 21));
+      final card = find.byKey(const ValueKey('upcoming-highlighted'));
+      expect(card, findsOneWidget);
       expect(
-        find.descendant(
-          of: nextCard,
-          matching: find.byKey(const ValueKey('transition-repeatSet')),
-        ),
-        findsOneWidget,
-      );
-      expect(
-        find.descendant(of: nextCard, matching: find.byType(GroupPill)),
+        find.descendant(of: card, matching: find.byType(GroupPill)),
         findsNWidgets(2),
       );
-      expect(
-        find.descendant(of: nextCard, matching: find.text('Group split')),
-        findsOneWidget,
-      );
-
-      final chips = breadcrumbChips(position);
-      expect(chips.map((c) => c.label), ['SET', 'SUBSET', 'EXERCISE']);
-      expect(chips[0].showRepeat, isTrue);
-      expect(chips[0].dots, [DotState.now, DotState.next]);
-      expect(chips[1].dots, [DotState.done, DotState.now]);
-      expect(chips[1].showRepeat, isFalse);
+      // Geen titels en geen overgangslabels meer.
+      expect(find.text('Group split'), findsNothing);
+      expect(find.text('2 d+'), findsNothing);
     },
   );
+
+  testWidgets(
+    'eerste van twee herhalingen: volgende oefening, niet gehighlight',
+    (tester) async {
+      await pumpPoolView(tester, examplePosition(2, 2));
+      expect(find.byKey(const ValueKey('upcoming')), findsOneWidget);
+      expect(find.text('1/2'), findsWidgets);
+      expect(find.text('W: 00:10 (−5s)'), findsOneWidget);
+      expect(find.text('W: 00:10 (+5s)'), findsOneWidget);
+      expect(find.text('R: 00:10'), findsNWidgets(2));
+    },
+  );
+
+  testWidgets('tweede herhaling toont de werktijd van die herhaling', (
+    tester,
+  ) async {
+    await pumpPoolView(tester, examplePosition(3, 2));
+    expect(find.text('W: 00:05 (−5s)'), findsOneWidget);
+    // onderaan: oefening 2, eerste herhaling
+    expect(find.text('W: 00:10 (+5s)'), findsOneWidget);
+  });
+
+  testWidgets('na de laatste oefening: END', (tester) async {
+    await pumpPoolView(tester, examplePosition(18, 2));
+    expect(find.text('END'), findsOneWidget);
+    expect(find.byType(UpcomingCard), findsOneWidget);
+  });
+
+  testWidgets('lijnen hebben een vaste hoogte, ook bij twee lijnen', (
+    tester,
+  ) async {
+    await pumpPoolView(tester, examplePosition(0, 3));
+    final four = tester.widget<LineRow>(find.byType(LineRow).first);
+    await pumpPoolView(tester, examplePosition(3, 2));
+    final two = tester.widget<LineRow>(find.byType(LineRow).first);
+    expect(two.metrics.height, closeTo(four.metrics.height, 0.01));
+  });
 
   test('warmup: SET is een spookchip, geen aparte warmup-chip', () {
     final chips = breadcrumbChips(examplePosition(0, 3));

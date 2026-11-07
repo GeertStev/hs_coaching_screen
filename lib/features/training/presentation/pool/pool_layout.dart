@@ -7,18 +7,30 @@ abstract final class PoolLayout {
   static const double width = 624;
   static const double height = 416;
 
-  static const double padTop = 20;
+  static const double padTop = 12;
   static const double padSide = 16;
-  static const double padBottom = 14;
+  static const double padBottom = 12;
   static const double zoneGap = 10;
 
-  static const double progressBarHeight = 6;
-  static const double lengthsLabelTop = 12;
-  static const double lengthsLabelSize = 13;
-
-  static const double breadcrumbHeight = 60;
+  /// Voortgangsbalk met balkjes per oefening, gegroepeerd per set/subset.
+  static const double progressHeight = 70;
   static const double middleHeight = 196;
-  static const double nextHeight = 106;
+
+  /// Het brede vak onderaan met de volgende oefening.
+  static const double upcomingHeight = 106;
+
+  /// Kruimelrij van [BreadcrumbRow]; die widget wordt nu niet getoond.
+  static const double breadcrumbHeight = 60;
+  static const double titleSize = 17;
+
+  /// Lijnen hebben een vaste hoogte alsof er zoveel lijnen zijn; pas bij
+  /// meer lijnen schalen ze kleiner.
+  static const int lineSlots = 5;
+  static const double lineGap = 6;
+  static const double upcomingLineGap = 3;
+
+  /// Linkerdeel van het onderste vak (herhalingen, W en R).
+  static const double upcomingLeft = 150;
 
   /// Breedte van de linkerkolom (timervak, Daarna-label) en de ruimte
   /// ernaast.
@@ -28,8 +40,6 @@ abstract final class PoolLayout {
   /// De vijf kolommen van elke lijnrij: aantal, afstand, techniek,
   /// inspanning, omgeving.
   static const List<int> lineColumnFlex = [9, 13, 9, 7, 11];
-
-  static const double titleSize = 17;
 }
 
 /// Maten van een lijnrij in één context (spec §4.4).

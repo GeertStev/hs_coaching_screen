@@ -111,8 +111,9 @@ class LineRow extends StatelessWidget {
   }
 }
 
-/// Een kolom lijnen die [height] vult: rijhoogte volgt uit het aantal lijnen,
-/// begrensd door [maxMetrics].
+/// Een kolom lijnen met een vaste rijhoogte: [height] wordt verdeeld alsof
+/// er [slots] lijnen zijn (standaard 5). Minder lijnen staan bovenaan met
+/// dezelfde hoogte; pas bij meer lijnen worden de rijen kleiner.
 class LineList extends StatelessWidget {
   const LineList({
     super.key,
@@ -120,6 +121,7 @@ class LineList extends StatelessWidget {
     required this.height,
     required this.maxMetrics,
     required this.gap,
+    this.slots = PoolLayout.lineSlots,
     this.muted = false,
     this.grow = false,
   });
@@ -128,23 +130,25 @@ class LineList extends StatelessWidget {
   final double height;
   final LineRowMetrics maxMetrics;
   final double gap;
+  final int slots;
   final bool muted;
 
-  /// `true`: rijen tussen medium en [maxMetrics] volgens de ruimte (het
-  /// lijnenvak); `false`: [maxMetrics] of kleiner als het niet past.
+  /// `true`: lettergroottes tussen medium en [maxMetrics] volgens de
+  /// rijhoogte (het lijnenvak); `false`: [maxMetrics], kleiner geschaald als
+  /// de rij lager is.
   final bool grow;
 
   @override
   Widget build(BuildContext context) {
-    if (lines.isEmpty) return SizedBox(height: height);
-    final rowHeight = (height - gap * (lines.length - 1)) / lines.length;
+    final rows = lines.length > slots ? lines.length : slots;
+    final rowHeight = (height - gap * (rows - 1)) / rows;
     final metrics = grow
         ? LineRowMetrics.forHeight(rowHeight.clamp(0, maxMetrics.height))
         : maxMetrics.fitHeight(rowHeight);
     return SizedBox(
       height: height,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           for (var i = 0; i < lines.length; i++) ...[
             if (i > 0) SizedBox(height: gap),

@@ -42,7 +42,16 @@ class PoolTrainingView extends StatelessWidget {
     return Container(
       width: PoolLayout.width,
       height: PoolLayout.height,
-      color: theme.background,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: theme.background,
+        borderRadius: BorderRadius.circular(PoolLayout.frameRadius),
+      ),
+      // Over de inhoud getekend: verschuift de layout niet.
+      foregroundDecoration: BoxDecoration(
+        border: Border.all(color: theme.frame, width: PoolLayout.frameWidth),
+        borderRadius: BorderRadius.circular(PoolLayout.frameRadius),
+      ),
       padding: const EdgeInsets.fromLTRB(
         PoolLayout.padSide,
         PoolLayout.padTop,

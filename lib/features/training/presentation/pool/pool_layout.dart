@@ -12,6 +12,10 @@ abstract final class PoolLayout {
   static const double padBottom = 12;
   static const double zoneGap = 10;
 
+  /// Kader rond het canvas, over de padding heen getekend.
+  static const double frameWidth = 4;
+  static const double frameRadius = 12;
+
   /// Voortgangsbalk met balkjes per oefening, gegroepeerd per set/subset.
   static const double progressHeight = 70;
   static const double middleHeight = 196;

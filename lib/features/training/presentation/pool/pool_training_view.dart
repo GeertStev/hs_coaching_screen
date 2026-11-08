@@ -69,14 +69,16 @@ class PoolTrainingView extends StatelessWidget {
         children: [
           TrainingProgressBar(items: position.progressBar),
           //const SizedBox(height: PoolLayout.zoneGap),
-          SizedBox(height: PoolLayout.middleHeight, child: middle),
+          SizedBox(
+            height: PoolLayout.middleHeight,
+            child: current == null
+                ? middle
+                : _FocusFrame(focused: position.focusOnCurrent, child: middle),
+          ),
           const SizedBox(height: PoolLayout.zoneGap),
           UpcomingCard(
             step: position.isFinished ? null : position.nextExercise,
-            highlighted:
-                current != null &&
-                position.isLastRepetition &&
-                position.nextExercise != null,
+            highlighted: position.focusOnNext,
           ),
         ],
       ),
@@ -110,7 +112,7 @@ class _Middle extends StatelessWidget {
         Expanded(
           child: LineList(
             lines: lines,
-            height: PoolLayout.middleHeight,
+            height: PoolLayout.middleInnerHeight,
             maxMetrics: LineRowMetrics.large,
             gap: PoolLayout.lineGap,
             grow: true,
@@ -132,7 +134,8 @@ class _SplitMiddle extends StatelessWidget {
     final theme = PoolDisplayTheme.of(context);
     final count = step.groups.length;
     const gap = 8.0;
-    final blockHeight = (PoolLayout.middleHeight - gap * (count - 1)) / count;
+    final blockHeight =
+        (PoolLayout.middleInnerHeight - gap * (count - 1)) / count;
     return Row(
       children: [
         Column(
@@ -181,6 +184,35 @@ class _SplitMiddle extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Oranje kader rond de huidige oefening zolang die de focus heeft (zie
+/// `TrainingDisplayPosition.focusOnNext`); zonder focus blijft de ruimte
+/// leeg zodat niets verspringt.
+class _FocusFrame extends StatelessWidget {
+  const _FocusFrame({required this.focused, required this.child});
+
+  final bool focused;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = PoolDisplayTheme.of(context);
+    return Container(
+      key: ValueKey(focused ? 'current-focused' : 'current'),
+      padding: const EdgeInsets.all(
+        PoolLayout.focusInset - PoolLayout.focusBorder,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(PoolLayout.focusRadius),
+        border: Border.all(
+          color: focused ? theme.now : theme.now.withValues(alpha: 0),
+          width: PoolLayout.focusBorder,
+        ),
+      ),
+      child: child,
     );
   }
 }

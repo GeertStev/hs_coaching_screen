@@ -136,6 +136,54 @@ final exampleTraining = Training(
   ],
 );
 
+/// Oefening, dan een oefening met enkel rust (rust tussen sets), dan weer
+/// een oefening.
+final restOnlyTraining = Training(
+  children: [
+    exerciseNode(
+      'a',
+      'A',
+      groups: [
+        TrainingExerciseGroup(
+          id: 'a',
+          workSeconds: 20,
+          parameterRows: [line('a1', 4, 'AB', 'Bov')],
+        ),
+      ],
+    ),
+    exerciseNode(
+      'rest',
+      'Rest',
+      groups: const [TrainingExerciseGroup(id: 'r', restSeconds: 30)],
+    ),
+    exerciseNode(
+      'b',
+      'B',
+      groups: [
+        TrainingExerciseGroup(
+          id: 'b',
+          workSeconds: 10,
+          parameterRows: [line('b1', 2, 'B', 'Ond')],
+        ),
+      ],
+    ),
+  ],
+);
+
+/// Positie in [training] op [elapsedSeconds] na de start.
+TrainingDisplayPosition trainingPositionAt(
+  Training training,
+  int elapsedSeconds,
+) => displayPositionAt(
+  buildDisplayTimeline(training),
+  computeTrainingProgress(
+    steps: flattenTraining(training),
+    status: TrainingStatus.running,
+    anchorStepIndex: 0,
+    elapsedSinceAnchorMillis: elapsedSeconds * 1000,
+  ),
+);
+
 /// Positie in [exampleTraining]: [elapsedSeconds] na het begin van
 /// weergavestap [displayIndex] (0-gebaseerd).
 TrainingDisplayPosition examplePosition(

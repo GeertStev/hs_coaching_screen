@@ -99,18 +99,39 @@ class _Content extends StatelessWidget {
         ),
         const SizedBox(width: 10),
         Expanded(
-          child: LineList(
-            lines: group?.lines ?? const [],
-            height: _innerHeight,
-            maxMetrics: LineRowMetrics.next,
-            gap: PoolLayout.upcomingLineGap,
-            muted: true,
-          ),
+          child: _isRestOnly(group)
+              ? Center(
+                  child: Text(
+                    PoolLabels.rest,
+                    key: const ValueKey('upcoming-rest'),
+                    style: theme.label(
+                      28,
+                      weight: FontWeight.w700,
+                      color: theme.rest,
+                      letterSpacing: 0.2,
+                    ),
+                  ),
+                )
+              : LineList(
+                  lines: group?.lines ?? const [],
+                  height: _innerHeight,
+                  maxMetrics: LineRowMetrics.next,
+                  gap: PoolLayout.upcomingLineGap,
+                  muted: true,
+                ),
         ),
       ],
     );
   }
 }
+
+/// Een oefening met enkel rust en zonder lijnen (bv. rust tussen twee
+/// sets): in plaats van een leeg lijnenvak staat er `REST`.
+bool _isRestOnly(DisplayGroup? group) =>
+    group != null &&
+    group.lines.isEmpty &&
+    group.workSeconds <= 0 &&
+    group.restSeconds > 0;
 
 /// Group split als volgende oefening: twee helften, elk met groepspill, W/R
 /// en de lijnen van die groep.

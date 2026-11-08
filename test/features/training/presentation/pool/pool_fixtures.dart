@@ -136,8 +136,9 @@ final exampleTraining = Training(
   ],
 );
 
-/// Oefening, dan een oefening met enkel rust (rust tussen sets), dan weer
-/// een oefening.
+/// Oefening, dan een oefening met enkel rust (rust tussen sets, met een
+/// lijn die niet getoond wordt), dan weer een oefening (met een lege lijn
+/// die ook niet getoond wordt).
 final restOnlyTraining = Training(
   children: [
     exerciseNode(
@@ -154,7 +155,13 @@ final restOnlyTraining = Training(
     exerciseNode(
       'rest',
       'Rest',
-      groups: const [TrainingExerciseGroup(id: 'r', restSeconds: 30)],
+      groups: const [
+        TrainingExerciseGroup(
+          id: 'r',
+          restSeconds: 30,
+          parameterRows: [TrainingParameterRow(id: 'r1', distance: 25)],
+        ),
+      ],
     ),
     exerciseNode(
       'b',
@@ -163,7 +170,10 @@ final restOnlyTraining = Training(
         TrainingExerciseGroup(
           id: 'b',
           workSeconds: 10,
-          parameterRows: [line('b1', 2, 'B', 'Ond')],
+          parameterRows: [
+            line('b1', 2, 'B', 'Ond'),
+            const TrainingParameterRow(id: 'b2'),
+          ],
         ),
       ],
     ),
@@ -203,7 +213,10 @@ final waitTraining = Training(
         TrainingExerciseGroup(
           id: 'b',
           workSeconds: 10,
-          parameterRows: [line('b1', 2, 'B', 'Ond')],
+          parameterRows: [
+            line('b1', 2, 'B', 'Ond'),
+            const TrainingParameterRow(id: 'b2'),
+          ],
         ),
       ],
     ),

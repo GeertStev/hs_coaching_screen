@@ -101,7 +101,7 @@ class _Middle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final group = step.groups.isEmpty ? null : step.groups.first;
-    final lines = group?.lines ?? const [];
+    final lines = visibleLines(group);
     return Row(
       children: [
         TimerBox(
@@ -177,7 +177,7 @@ class _SplitMiddle extends StatelessWidget {
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: LineList(
-                    lines: step.groups[i].lines,
+                    lines: visibleLines(step.groups[i]),
                     height: blockHeight - 16,
                     maxMetrics: LineRowMetrics.large,
                     gap: PoolLayout.lineGap,

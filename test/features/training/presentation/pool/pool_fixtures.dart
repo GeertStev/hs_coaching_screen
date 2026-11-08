@@ -170,6 +170,46 @@ final restOnlyTraining = Training(
   ],
 );
 
+/// Oefening (20 s), dan een ongetimede oefening 2× (wacht op de coach), dan
+/// weer een oefening.
+final waitTraining = Training(
+  children: [
+    exerciseNode(
+      'a',
+      'A',
+      groups: [
+        TrainingExerciseGroup(
+          id: 'a',
+          workSeconds: 20,
+          parameterRows: [line('a1', 4, 'AB', 'Bov')],
+        ),
+      ],
+    ),
+    exerciseNode(
+      'talk',
+      'Talk',
+      repeatCount: 2,
+      groups: [
+        TrainingExerciseGroup(
+          id: 't',
+          parameterRows: [line('t1', 2, 'B', 'Bov')],
+        ),
+      ],
+    ),
+    exerciseNode(
+      'b',
+      'B',
+      groups: [
+        TrainingExerciseGroup(
+          id: 'b',
+          workSeconds: 10,
+          parameterRows: [line('b1', 2, 'B', 'Ond')],
+        ),
+      ],
+    ),
+  ],
+);
+
 /// Positie in [training] op [elapsedSeconds] na de start.
 TrainingDisplayPosition trainingPositionAt(
   Training training,

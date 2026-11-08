@@ -281,6 +281,19 @@ void main() {
     await pumpPoolView(tester, trainingPositionAt(waitTraining, 5));
     expect(find.byKey(const ValueKey('upcoming-wait')), findsOneWidget);
   });
+
+  testWidgets('enkel rust: geen lijnen, huidig en volgend; lege lijn nooit', (
+    tester,
+  ) async {
+    // volgende = enkel rust (met een lijn in de data)
+    await pumpPoolView(tester, trainingPositionAt(restOnlyTraining, 10));
+    expect(find.byType(LineRow), findsOneWidget); // enkel de huidige a1
+    // huidige = enkel rust, volgende = b met een lege lijn
+    await pumpPoolView(tester, trainingPositionAt(restOnlyTraining, 22));
+    final rows = tester.widgetList<LineRow>(find.byType(LineRow)).toList();
+    expect(rows, hasLength(1));
+    expect(rows.single.line.id, 'b1');
+  });
 }
 
 /// [WorkRestText] met deze waarden (`null` = om het even).

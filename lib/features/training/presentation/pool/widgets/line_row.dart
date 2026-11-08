@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hs_coaching_core/training/display/display_step.dart';
 import 'package:hs_coaching_core/training/training_parameter_row.dart';
 import 'package:hs_coaching_screen/features/training/presentation/pool/pool_display_theme.dart';
 import 'package:hs_coaching_screen/features/training/presentation/pool/pool_layout.dart';
@@ -110,6 +111,27 @@ class LineRow extends StatelessWidget {
     );
   }
 }
+
+/// Een groep met enkel rust (geen werk, wel rust), bv. rust tussen sets.
+bool isRestOnly(DisplayGroup? group) =>
+    group != null && group.workSeconds <= 0 && group.restSeconds > 0;
+
+/// De lijnen die het scherm toont: geen enkele bij een groep met enkel rust,
+/// en nooit een lege lijn (enkel streepjes).
+List<TrainingParameterRow> visibleLines(DisplayGroup? group) {
+  if (group == null || isRestOnly(group)) return const [];
+  return [
+    for (final line in group.lines)
+      if (!_isEmptyLine(line)) line,
+  ];
+}
+
+bool _isEmptyLine(TrainingParameterRow line) =>
+    line.reps == null &&
+    line.distance == null &&
+    (line.stroke?.trim() ?? '').isEmpty &&
+    line.intensity == null &&
+    (line.zone?.trim() ?? '').isEmpty;
 
 /// Een kolom lijnen met een vaste rijhoogte: [height] wordt verdeeld alsof
 /// er [slots] lijnen zijn (standaard 5). Minder lijnen staan bovenaan met

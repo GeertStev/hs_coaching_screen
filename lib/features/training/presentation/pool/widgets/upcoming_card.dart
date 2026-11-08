@@ -116,7 +116,7 @@ class _Content extends StatelessWidget {
         ),
         const SizedBox(width: PoolLayout.upcomingLeftGap),
         Expanded(
-          child: _isRestOnly(group)
+          child: isRestOnly(group)
               ? Center(
                   child: Text(
                     PoolLabels.rest,
@@ -130,7 +130,7 @@ class _Content extends StatelessWidget {
                   ),
                 )
               : LineList(
-                  lines: group?.lines ?? const [],
+                  lines: visibleLines(group),
                   height: _innerHeight,
                   maxMetrics: LineRowMetrics.next,
                   gap: PoolLayout.upcomingLineGap,
@@ -145,14 +145,6 @@ class _Content extends StatelessWidget {
 /// Een ongetimede oefening (geen werk en geen rust): wacht op de coach.
 bool _isUntimed(DisplayGroup? group) =>
     group != null && group.workSeconds <= 0 && group.restSeconds <= 0;
-
-/// Een oefening met enkel rust en zonder lijnen (bv. rust tussen twee
-/// sets): in plaats van een leeg lijnenvak staat er `REST`.
-bool _isRestOnly(DisplayGroup? group) =>
-    group != null &&
-    group.lines.isEmpty &&
-    group.workSeconds <= 0 &&
-    group.restSeconds > 0;
 
 /// Group split als volgende oefening: twee helften, elk met groepspill, W/R
 /// en de lijnen van die groep.
@@ -210,7 +202,7 @@ class _SplitContent extends StatelessWidget {
                 const SizedBox(width: 6),
                 Expanded(
                   child: LineList(
-                    lines: step.groups[i].lines,
+                    lines: visibleLines(step.groups[i]),
                     height: _innerHeight,
                     maxMetrics: LineRowMetrics.nextSplit,
                     gap: PoolLayout.upcomingLineGap,

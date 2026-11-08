@@ -57,7 +57,7 @@ class PoolDisplayTheme extends ThemeExtension<PoolDisplayTheme> {
   /// gouden kader zoals de chrono. Geen groen (app-regel).
   static const standard = PoolDisplayTheme(
     background: Color(0xFF1E2020),
-    frame: Color(0xFFEDBA20),
+    frame: Color(0xFF444653), //0xFFEDBA20
     surface: Color(0xFF2A2B2E),
     surfaceRow: Color(0xFF333535),
     rowBorder: Color(0xFF444653),

@@ -7,9 +7,8 @@ import 'package:hs_coaching_screen/features/training/presentation/pool/pool_layo
 import 'package:hs_coaching_screen/features/training/presentation/pool/widgets/pool_labels.dart';
 
 // Maten binnen de voortgangsbalk.
-const double _barHeight = 10;
+const double _barHeight = 18;
 const double _counterSize = 11;
-const double _counterGap = 2;
 const double _gap = 6;
 const double _innerGap = 4;
 const double _boxPadding = 2.5;
@@ -20,8 +19,8 @@ const double _boxBorder = 1.5;
 const double _minShare = 0.045;
 
 /// Voortgangsbalk bovenaan (vervangt de kruimelrij): één balkje per oefening,
-/// een kader per set/subset, niet uitgerold. Onder elk element de teller
-/// `x/y`. De breedte volgt het aantal banen (core's `ProgressItem.lengths`).
+/// een kader per set/subset, niet uitgerold. Bij een oefening staat de teller
+/// `x/y` in het balkje zelf; bij een set/subset op de kaderlijn. De breedte volgt het aantal banen (core's `ProgressItem.lengths`).
 /// Past de balk niet in de hoogte (diepe nesting), dan schaalt hij kleiner.
 class TrainingProgressBar extends StatelessWidget {
   const TrainingProgressBar({super.key, required this.items});
@@ -107,6 +106,7 @@ class _ExerciseBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = PoolDisplayTheme.of(context);
+    final filled = item.state != ProgressItemState.upcoming;
     final decoration = switch (item.state) {
       ProgressItemState.done => BoxDecoration(
         color: theme.done,
@@ -121,13 +121,16 @@ class _ExerciseBar extends StatelessWidget {
         border: Border.all(color: theme.upcoming, width: 1.5),
       ),
     };
-    return Column(
+    return Container(
       key: ValueKey('progress-${item.nodeId}'),
-      children: [
-        Container(height: _barHeight, decoration: decoration),
-        const SizedBox(height: _counterGap),
-        _Counter(item: item),
-      ],
+      height: _barHeight,
+      decoration: decoration,
+      alignment: Alignment.center,
+      child: _Counter(
+        item: item,
+        color: filled ? theme.background : theme.textFaint,
+        text: '${item.count}x',
+      ),
     );
   }
 }
@@ -142,40 +145,70 @@ class _GroupBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = PoolDisplayTheme.of(context);
     final current = item.state == ProgressItemState.current;
-    return Column(
+    final borderColor = current ? theme.now : theme.rowBorder;
+    return Stack(
       key: ValueKey('progress-${item.nodeId}'),
       children: [
-        Container(
-          padding: const EdgeInsets.all(_boxPadding),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(7),
-            border: Border.all(
-              color: current ? theme.chipBorderStrong : theme.rowBorder,
-              width: _boxBorder,
+        Padding(
+          // Ruimte voor de onderste helft van het label op de onderrand.
+          padding: const EdgeInsets.only(bottom: _counterSize / 2),
+          child: Container(
+            width: double.infinity,
+            // Geen bovenrand: de balkjes staan op één hoogte, het kader
+            // sluit ze alleen links, rechts en onder in.
+            padding: const EdgeInsets.fromLTRB(
+              _boxPadding,
+              0,
+              _boxPadding,
+              _boxPadding + _counterSize / 2,
+            ),
+            decoration: BoxDecoration(
+              border: Border(
+                left: BorderSide(color: borderColor, width: _boxBorder),
+                right: BorderSide(color: borderColor, width: _boxBorder),
+                bottom: BorderSide(color: borderColor, width: _boxBorder),
+              ),
+            ),
+            child: _ItemRow(
+              items: item.children,
+              weights: weights,
+              gap: _innerGap,
             ),
           ),
-          child: _ItemRow(
-            items: item.children,
-            weights: weights,
-            gap: _innerGap,
+        ),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: Center(
+            child: Container(
+              height: _counterSize,
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              color: theme.background,
+              child: _Counter(item: item),
+            ),
           ),
         ),
-        const SizedBox(height: _counterGap),
-        _Counter(item: item),
       ],
     );
   }
 }
 
 class _Counter extends StatelessWidget {
-  const _Counter({required this.item});
+  const _Counter({required this.item, this.color, this.text});
 
   final ProgressItem item;
+
+  /// Vaste kleur (in een gevuld balkje); anders volgt de kleur de status.
+  final Color? color;
+
+  /// Vaste tekst in plaats van `x/y`.
+  final String? text;
 
   @override
   Widget build(BuildContext context) {
     final theme = PoolDisplayTheme.of(context);
-    final (color, weight) = switch (item.state) {
+    final (stateColor, weight) = switch (item.state) {
       ProgressItemState.current => (theme.now, FontWeight.w700),
       ProgressItemState.done => (theme.textMuted, FontWeight.w600),
       ProgressItemState.upcoming => (theme.textFaint, FontWeight.w600),
@@ -185,9 +218,9 @@ class _Counter extends StatelessWidget {
       child: FittedBox(
         fit: BoxFit.scaleDown,
         child: Text(
-          formatCounter(item.counter, item.count),
+          text ?? formatCounter(item.counter, item.count),
           style: theme
-              .number(_counterSize, color: color)
+              .number(_counterSize, color: color ?? stateColor)
               .copyWith(fontWeight: weight),
         ),
       ),

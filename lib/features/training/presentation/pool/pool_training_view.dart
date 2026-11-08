@@ -61,7 +61,7 @@ class PoolTrainingView extends StatelessWidget {
       child: Column(
         children: [
           TrainingProgressBar(items: position.progressBar),
-          const SizedBox(height: PoolLayout.zoneGap),
+          //const SizedBox(height: PoolLayout.zoneGap),
           SizedBox(height: PoolLayout.middleHeight, child: middle),
           const SizedBox(height: PoolLayout.zoneGap),
           UpcomingCard(

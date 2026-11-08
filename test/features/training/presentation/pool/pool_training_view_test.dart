@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hs_coaching_core/training/training_status.dart';
+import 'package:hs_coaching_screen/features/training/presentation/pool/pool_layout.dart';
 import 'package:hs_coaching_screen/features/training/presentation/pool/pool_training_view.dart';
 import 'package:hs_coaching_screen/features/training/presentation/pool/widgets/breadcrumb.dart';
 import 'package:hs_coaching_screen/features/training/presentation/pool/widgets/level_dots.dart';
@@ -51,6 +52,36 @@ void main() {
         );
       });
     }
+  });
+
+  group('fullscreen 16:9 (breder canvas)', () {
+    final width = PoolLayout.canvasWidthFor(const Size(1920, 1080));
+    for (final name in ['step02_group_split', 'step04_exercise']) {
+      testWidgets(name, (tester) async {
+        await pumpPoolView(tester, _scenes[name]!(), width: width);
+        expect(tester.takeException(), isNull);
+        await expectLater(
+          find.byType(PoolTrainingView),
+          matchesGoldenFile('goldens/wide_$name.png'),
+        );
+      });
+    }
+  });
+
+  test('canvasbreedte volgt de verhouding van het content-vak, begrensd', () {
+    expect(PoolLayout.canvasWidthFor(const Size(540, 360)), 624);
+    expect(
+      PoolLayout.canvasWidthFor(const Size(1920, 1080)),
+      closeTo(416 * 16 / 9, 0.01),
+    );
+    expect(
+      PoolLayout.canvasWidthFor(const Size(400, 600)),
+      PoolLayout.minWidth,
+    );
+    expect(
+      PoolLayout.canvasWidthFor(const Size(3000, 500)),
+      PoolLayout.maxWidth,
+    );
   });
 
   testWidgets('de vijf kolommen staan op elk scherm op dezelfde plek', (

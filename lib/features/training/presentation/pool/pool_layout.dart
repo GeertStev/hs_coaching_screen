@@ -1,11 +1,30 @@
+import 'dart:ui' show Size;
+
 /// Vaste maten van het zwembadscherm voor Training (spec §4). De layout,
 /// de zones en de vijf-kolommen-grid van een lijnrij zijn op elk scherm
 /// identiek; dat is het hoofdpunt van het ontwerp. Kleuren en fonts staan
 /// apart in `pool_display_theme.dart`.
 abstract final class PoolLayout {
-  /// Ontwerpcanvas; het scherm schaalt dit als geheel in zijn content-vak.
-  static const double width = 624;
+  /// Ontwerpcanvas. De hoogte ligt vast (alle zones hebben een vaste
+  /// hoogte); de breedte volgt de verhouding van het content-vak, zodat een
+  /// breder vak (bv. fullscreen 16:9) volledig benut wordt. Het canvas
+  /// schaalt daarna als geheel naar de echte pixels.
   static const double height = 416;
+
+  /// Breedte van het oorspronkelijke ontwerp (3:2).
+  static const double designWidth = 624;
+
+  /// Smaller past de layout niet (timervak + lijnen); breder worden de
+  /// lijnen onleesbaar lang. Daarbuiten komen er randen naast/boven.
+  static const double minWidth = 560;
+  static const double maxWidth = 1000;
+
+  /// Canvasbreedte voor een content-vak van [area] (in eender welke
+  /// eenheid): dezelfde verhouding, begrensd tot [minWidth]..[maxWidth].
+  static double canvasWidthFor(Size area) {
+    if (area.width <= 0 || area.height <= 0) return designWidth;
+    return (height * area.width / area.height).clamp(minWidth, maxWidth);
+  }
 
   static const double padTop = 12;
   static const double padSide = 16;

@@ -16,9 +16,16 @@ import 'package:hs_coaching_screen/features/training/presentation/pool/widgets/u
 /// Geen kruimelpad en geen titels. Zuiver: tekent enkel [position]; schalen
 /// naar het content-vak doet `TrainingScreen`.
 class PoolTrainingView extends StatelessWidget {
-  const PoolTrainingView({super.key, required this.position});
+  const PoolTrainingView({
+    super.key,
+    required this.position,
+    this.width = PoolLayout.designWidth,
+  });
 
   final TrainingDisplayPosition position;
+
+  /// Canvasbreedte (zie `PoolLayout.canvasWidthFor`); de hoogte is vast.
+  final double width;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +47,7 @@ class PoolTrainingView extends StatelessWidget {
     }
 
     return Container(
-      width: PoolLayout.width,
+      width: width,
       height: PoolLayout.height,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(

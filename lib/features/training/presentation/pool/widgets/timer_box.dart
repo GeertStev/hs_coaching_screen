@@ -67,7 +67,7 @@ class TimerBox extends StatelessWidget {
     final repetition = step.path.repetition;
     return Container(
       width: PoolLayout.leftColumn,
-      height: PoolLayout.middleHeight,
+      height: PoolLayout.middleInnerHeight,
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         color: theme.surface,
@@ -262,8 +262,8 @@ class RepetitionCounter extends StatelessWidget {
   }
 }
 
-/// Twee regels: `W: 00:05 (−5s)` en `R: 00:10`. Niets bij een ongetimede
-/// stap.
+/// Twee regels: `W: 00:05 (−5s)` en `R: 00:10`. Enkel `R` bij een oefening
+/// met enkel rust, niets bij een ongetimede stap.
 class WorkRestText extends StatelessWidget {
   const WorkRestText({
     super.key,
@@ -283,7 +283,7 @@ class WorkRestText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = PoolDisplayTheme.of(context);
-    if (workSeconds <= 0) return const SizedBox.shrink();
+    if (workSeconds <= 0 && restSeconds <= 0) return const SizedBox.shrink();
     final style = theme.label(
       size,
       weight: FontWeight.w700,
@@ -298,8 +298,10 @@ class WorkRestText extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        line(formatWorkLine(workSeconds, deltaSeconds)),
-        SizedBox(height: size * 0.4),
+        if (workSeconds > 0) ...[
+          line(formatWorkLine(workSeconds, deltaSeconds)),
+          SizedBox(height: size * 0.4),
+        ],
         line(formatRestLine(workSeconds, restSeconds)),
       ],
     );

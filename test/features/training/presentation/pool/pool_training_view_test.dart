@@ -27,6 +27,10 @@ final _scenes = {
   // stap 18: laatste herhaling van de laatste oefening → END
   'step19_last': () => examplePosition(18, 2),
   'before_start': () => examplePosition(-1, 0, status: TrainingStatus.idle),
+  // 5 s voor het einde, volgende = oefening met enkel rust
+  'next_rest_only': () => trainingPositionAt(restOnlyTraining, 15),
+  // oefening met enkel rust loopt
+  'rest_only': () => trainingPositionAt(restOnlyTraining, 22),
   'finished': () => examplePosition(19, 0),
 };
 
@@ -148,6 +152,40 @@ void main() {
     expect(find.text('W: 00:05 (−5s)'), findsOneWidget);
     // onderaan: oefening 2, eerste herhaling
     expect(find.text('W: 00:10 (+5s)'), findsOneWidget);
+  });
+
+  testWidgets('focus: huidige oefening tot de rust van de laatste herhaling', (
+    tester,
+  ) async {
+    // stap 10, werk: focus op de huidige oefening.
+    await pumpPoolView(tester, examplePosition(9, 3));
+    expect(find.byKey(const ValueKey('current-focused')), findsOneWidget);
+    expect(find.byKey(const ValueKey('upcoming')), findsOneWidget);
+    // stap 10, rust: focus op de volgende.
+    await pumpPoolView(tester, examplePosition(9, 21));
+    expect(find.byKey(const ValueKey('current')), findsOneWidget);
+    expect(find.byKey(const ValueKey('upcoming-highlighted')), findsOneWidget);
+  });
+
+  testWidgets('oefening met enkel rust: onderaan REST met de rusttijd', (
+    tester,
+  ) async {
+    await pumpPoolView(tester, trainingPositionAt(restOnlyTraining, 10));
+    expect(find.byKey(const ValueKey('upcoming-rest')), findsOneWidget);
+    expect(find.text('R: 00:30'), findsOneWidget);
+    // Zonder rust: focus pas 5 s voor het einde.
+    expect(find.byKey(const ValueKey('current-focused')), findsOneWidget);
+    await pumpPoolView(tester, trainingPositionAt(restOnlyTraining, 15));
+    expect(find.byKey(const ValueKey('upcoming-highlighted')), findsOneWidget);
+  });
+
+  testWidgets('oefening met enkel rust loopt vanzelf af', (tester) async {
+    await pumpPoolView(tester, trainingPositionAt(restOnlyTraining, 22));
+    expect(find.text('REST'), findsWidgets);
+    expect(find.text('00:28'), findsOneWidget);
+    expect(find.text('R: 00:30'), findsOneWidget);
+    await pumpPoolView(tester, trainingPositionAt(restOnlyTraining, 51));
+    expect(find.text('00:09'), findsOneWidget);
   });
 
   testWidgets('na de laatste oefening: END', (tester) async {

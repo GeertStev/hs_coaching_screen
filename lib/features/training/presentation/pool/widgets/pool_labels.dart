@@ -62,9 +62,12 @@ String formatWorkLine(int workSeconds, int deltaSeconds) {
   return 'W: ${formatTimer(workSeconds)}$delta';
 }
 
-/// `R: 00:10`; leeg als de stap ongetimed is.
+/// `R: 00:10`; leeg als de stap ongetimed is (geen werk en geen rust). Een
+/// oefening met enkel rust toont dus enkel deze regel.
 String formatRestLine(int workSeconds, int restSeconds) =>
-    workSeconds <= 0 ? '' : 'R: ${formatTimer(restSeconds)}';
+    workSeconds <= 0 && restSeconds <= 0
+    ? ''
+    : 'R: ${formatTimer(restSeconds)}';
 
 /// `1/2`: herhaling (1-gebaseerd) van het aantal.
 String formatCounter(int value, int count) => '$value/$count';

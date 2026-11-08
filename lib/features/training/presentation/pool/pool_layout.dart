@@ -39,6 +39,15 @@ abstract final class PoolLayout {
   static const double progressHeight = 70;
   static const double middleHeight = 196;
 
+  /// Focuskader (oranje) rond de huidige oefening: altijd plaats voor
+  /// voorzien, zodat niets verspringt als het kader aan of uit gaat.
+  static const double focusBorder = 2.5;
+  static const double focusInset = 3;
+  static const double focusRadius = 17;
+
+  /// Hoogte van timervak en lijnen binnen het focuskader.
+  static const double middleInnerHeight = middleHeight - 2 * focusInset;
+
   /// Het brede vak onderaan met de volgende oefening.
   static const double upcomingHeight = 106;
 

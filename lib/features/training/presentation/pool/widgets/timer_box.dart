@@ -262,8 +262,9 @@ class RepetitionCounter extends StatelessWidget {
   }
 }
 
-/// Twee regels: `W: 00:05 (−5s)` en `R: 00:10`. Enkel `R` bij een oefening
-/// met enkel rust, niets bij een ongetimede stap.
+/// Twee regels: `W: 00:05 (−5s)` en `R: 00:10`, als tabel: W en R onder
+/// elkaar, de tijden onder elkaar, de delta erachter. Enkel `R` bij een
+/// oefening met enkel rust, niets bij een ongetimede stap.
 class WorkRestText extends StatelessWidget {
   const WorkRestText({
     super.key,
@@ -284,26 +285,48 @@ class WorkRestText extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = PoolDisplayTheme.of(context);
     if (workSeconds <= 0 && restSeconds <= 0) return const SizedBox.shrink();
-    final style = theme.label(
-      size,
-      weight: FontWeight.w700,
-      color: color ?? theme.textSecondary,
-    );
-    Widget line(String text) => FittedBox(
+    final style = theme
+        .label(
+          size,
+          weight: FontWeight.w700,
+          color: color ?? theme.textSecondary,
+        )
+        .copyWith(fontFeatures: const [FontFeature.tabularFigures()]);
+    final rowGap = size * 0.4;
+    final columnGap = size * 0.35;
+
+    TableRow row(String label, String time, String delta, {double below = 0}) {
+      Widget cell(String text, {double left = 0}) => Padding(
+        padding: EdgeInsets.only(left: left, bottom: below),
+        child: Text(text, style: style, maxLines: 1, softWrap: false),
+      );
+      return TableRow(
+        children: [
+          cell(label),
+          cell(time, left: columnGap),
+          cell(delta, left: delta.isEmpty ? 0 : columnGap),
+        ],
+      );
+    }
+
+    return FittedBox(
       fit: BoxFit.scaleDown,
       alignment: Alignment.centerLeft,
-      child: Text(text, style: style, maxLines: 1, softWrap: false),
-    );
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (workSeconds > 0) ...[
-          line(formatWorkLine(workSeconds, deltaSeconds)),
-          SizedBox(height: size * 0.4),
+      child: Table(
+        defaultColumnWidth: const IntrinsicColumnWidth(),
+        defaultVerticalAlignment: TableCellVerticalAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
+        children: [
+          if (workSeconds > 0)
+            row(
+              PoolLabels.workShort,
+              formatTimer(workSeconds),
+              formatDeltaShort(deltaSeconds),
+              below: rowGap,
+            ),
+          row(PoolLabels.restShort, formatTimer(restSeconds), ''),
         ],
-        line(formatRestLine(workSeconds, restSeconds)),
-      ],
+      ),
     );
   }
 }

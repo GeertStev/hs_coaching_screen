@@ -31,13 +31,24 @@ abstract final class PoolLayout {
   static const double padBottom = 12;
   static const double zoneGap = 10;
 
+  /// Kleine ruimte tussen voortgangsbalk en midden (het focuskader heeft
+  /// zelf al [focusInset] marge).
+  static const double progressGap = 4;
+
   /// Kader rond het canvas, over de padding heen getekend.
   static const double frameWidth = 4;
   static const double frameRadius = 12;
 
-  /// Voortgangsbalk met balkjes per oefening, gegroepeerd per set/subset.
-  static const double progressHeight = 70;
-  static const double middleHeight = 196;
+  /// Voortgangsbalk met balkjes per oefening, gegroepeerd per set/subset:
+  /// precies de hoogte bij de maximale nesting (set › subset › oefening,
+  /// zie `progress_bar.dart`); dieper schaalt hij kleiner.
+  static const double progressHeight = 48;
+
+  /// Midden (timer + lijnen) en het vak met de volgende oefening verdelen de
+  /// rest van de hoogte: [height] = [padTop] + [progressHeight] +
+  /// [progressGap] + [middleHeight] + [zoneGap] + [upcomingHeight] +
+  /// [padBottom] (zie de test).
+  static const double middleHeight = 214;
 
   /// Focuskader (oranje) rond de huidige oefening: altijd plaats voor
   /// voorzien, zodat niets verspringt als het kader aan of uit gaat.
@@ -49,7 +60,7 @@ abstract final class PoolLayout {
   static const double middleInnerHeight = middleHeight - 2 * focusInset;
 
   /// Het brede vak onderaan met de volgende oefening.
-  static const double upcomingHeight = 106;
+  static const double upcomingHeight = 116;
 
   /// Kruimelrij van [BreadcrumbRow]; die widget wordt nu niet getoond.
   static const double breadcrumbHeight = 60;
@@ -57,17 +68,36 @@ abstract final class PoolLayout {
 
   /// Lijnen hebben een vaste hoogte alsof er zoveel lijnen zijn; pas bij
   /// meer lijnen schalen ze kleiner.
-  static const int lineSlots = 5;
+  static const int lineSlots = 4;
   static const double lineGap = 6;
   static const double upcomingLineGap = 3;
-
-  /// Linkerdeel van het onderste vak (herhalingen, W en R).
-  static const double upcomingLeft = 150;
 
   /// Breedte van de linkerkolom (timervak, Daarna-label) en de ruimte
   /// ernaast.
   static const double leftColumn = 226;
   static const double columnGap = 14;
+
+  /// Onderste vak: padding links/boven/onder, de dikste rand (oranje) en de
+  /// ruimte tussen het linkerdeel en de lijnen.
+  static const double upcomingPadH = 12;
+  static const double upcomingPadV = 6;
+  static const double upcomingBorderMax = 2.5;
+  static const double upcomingLeftGap = 10;
+
+  /// Linkerdeel van het onderste vak (herhalingen, W en R): zo breed dat de
+  /// lijnen van de volgende oefening exact onder die van de huidige staan
+  /// (zelfde linker- en rechterrand).
+  static const double upcomingLeft =
+      focusInset +
+      leftColumn +
+      columnGap -
+      upcomingPadH -
+      upcomingBorderMax -
+      upcomingLeftGap;
+
+  /// Rechts van de lijnen in het onderste vak, rand inbegrepen: gelijk aan
+  /// de marge van het focuskader rond de huidige lijnen.
+  static const double upcomingPadRight = focusInset;
 
   /// De vijf kolommen van elke lijnrij: aantal, afstand, techniek,
   /// inspanning, omgeving.

@@ -32,6 +32,10 @@ final _scenes = {
   // oefening met enkel rust loopt
   'rest_only': () => trainingPositionAt(restOnlyTraining, 22),
   'finished': () => examplePosition(19, 0),
+  // ongetimede oefening loopt: WAIT, onderaan de volgende oefening
+  'wait_current': () => trainingPositionAt(waitTraining, 25),
+  // volgende oefening is ongetimed: WAIT COACH in plaats van 1×
+  'wait_next': () => trainingPositionAt(waitTraining, 5),
 };
 
 void main() {
@@ -139,9 +143,11 @@ void main() {
       await pumpPoolView(tester, examplePosition(2, 2));
       expect(find.byKey(const ValueKey('upcoming')), findsOneWidget);
       expect(find.text('1/2'), findsWidgets);
-      expect(find.text('W: 00:10 (−5s)'), findsOneWidget);
-      expect(find.text('W: 00:10 (+5s)'), findsOneWidget);
-      expect(find.text('R: 00:10'), findsNWidgets(2));
+      expect(findWorkRest(work: 10, delta: -5), findsOneWidget);
+      expect(findWorkRest(work: 10, delta: 5), findsOneWidget);
+      expect(findWorkRest(rest: 10), findsNWidgets(2));
+      expect(find.text('(−5s)'), findsOneWidget);
+      expect(find.text('(+5s)'), findsOneWidget);
     },
   );
 
@@ -149,9 +155,9 @@ void main() {
     tester,
   ) async {
     await pumpPoolView(tester, examplePosition(3, 2));
-    expect(find.text('W: 00:05 (−5s)'), findsOneWidget);
+    expect(findWorkRest(work: 5, delta: -5), findsOneWidget);
     // onderaan: oefening 2, eerste herhaling
-    expect(find.text('W: 00:10 (+5s)'), findsOneWidget);
+    expect(findWorkRest(work: 10, delta: 5), findsOneWidget);
   });
 
   testWidgets('focus: huidige oefening tot de rust van de laatste herhaling', (
@@ -172,7 +178,7 @@ void main() {
   ) async {
     await pumpPoolView(tester, trainingPositionAt(restOnlyTraining, 10));
     expect(find.byKey(const ValueKey('upcoming-rest')), findsOneWidget);
-    expect(find.text('R: 00:30'), findsOneWidget);
+    expect(findWorkRest(work: 0, rest: 30), findsOneWidget);
     // Zonder rust: focus pas 5 s voor het einde.
     expect(find.byKey(const ValueKey('current-focused')), findsOneWidget);
     await pumpPoolView(tester, trainingPositionAt(restOnlyTraining, 15));
@@ -183,7 +189,7 @@ void main() {
     await pumpPoolView(tester, trainingPositionAt(restOnlyTraining, 22));
     expect(find.text('REST'), findsWidgets);
     expect(find.text('00:28'), findsOneWidget);
-    expect(find.text('R: 00:30'), findsOneWidget);
+    expect(findWorkRest(work: 0, rest: 30), findsOneWidget);
     await pumpPoolView(tester, trainingPositionAt(restOnlyTraining, 51));
     expect(find.text('00:09'), findsOneWidget);
   });
@@ -223,4 +229,66 @@ void main() {
     expect(current, hasLength(4));
     expect(current.map((r) => r.metrics.height).toSet(), hasLength(1));
   });
+
+  test('de zones vullen samen precies de canvashoogte', () {
+    expect(
+      PoolLayout.padTop +
+          PoolLayout.progressHeight +
+          PoolLayout.progressGap +
+          PoolLayout.middleHeight +
+          PoolLayout.zoneGap +
+          PoolLayout.upcomingHeight +
+          PoolLayout.padBottom,
+      PoolLayout.height,
+    );
+  });
+
+  testWidgets('W en R staan onder elkaar, de tijden ook', (tester) async {
+    await pumpPoolView(tester, examplePosition(3, 2));
+    final box = find.byType(TimerBox);
+    Rect rectOf(String text) =>
+        tester.getRect(find.descendant(of: box, matching: find.text(text)));
+    expect(rectOf('W:').left, closeTo(rectOf('R:').left, 0.01));
+    expect(rectOf('00:05').left, closeTo(rectOf('00:10').left, 0.01));
+  });
+
+  testWidgets('lijnen van de volgende oefening even breed als de huidige', (
+    tester,
+  ) async {
+    await pumpPoolView(tester, examplePosition(3, 2));
+    final rows = tester.widgetList<LineRow>(find.byType(LineRow)).toList();
+    final current = rows.firstWhere((r) => !r.muted);
+    final next = rows.firstWhere((r) => r.muted);
+    final a = tester.getRect(find.byWidget(current));
+    final b = tester.getRect(find.byWidget(next));
+    expect(b.left, closeTo(a.left, 0.01));
+    expect(b.right, closeTo(a.right, 0.01));
+  });
+
+  testWidgets('ongetimede oefening: WAIT, focus op de volgende', (
+    tester,
+  ) async {
+    await pumpPoolView(tester, trainingPositionAt(waitTraining, 600));
+    expect(find.text('WAIT'), findsOneWidget);
+    expect(find.text('Waiting for the coach'), findsOneWidget);
+    expect(find.byType(TimerBox), findsNothing);
+    expect(find.byKey(const ValueKey('upcoming-highlighted')), findsOneWidget);
+  });
+
+  testWidgets('volgende oefening ongetimed: WAIT COACH in plaats van N×', (
+    tester,
+  ) async {
+    await pumpPoolView(tester, trainingPositionAt(waitTraining, 5));
+    expect(find.byKey(const ValueKey('upcoming-wait')), findsOneWidget);
+  });
 }
+
+/// [WorkRestText] met deze waarden (`null` = om het even).
+Finder findWorkRest({int? work, int? rest, int? delta}) =>
+    find.byWidgetPredicate(
+      (w) =>
+          w is WorkRestText &&
+          (work == null || w.workSeconds == work) &&
+          (rest == null || w.restSeconds == rest) &&
+          (delta == null || w.deltaSeconds == delta),
+    );

@@ -6,19 +6,21 @@ import 'package:hs_coaching_screen/features/training/presentation/pool/widgets/l
 import 'package:hs_coaching_screen/features/training/presentation/pool/widgets/pool_labels.dart';
 import 'package:hs_coaching_screen/features/training/presentation/pool/widgets/timer_box.dart';
 
-const double _padH = 12;
-const double _padV = 6;
+const double _padH = PoolLayout.upcomingPadH;
+const double _padV = PoolLayout.upcomingPadV;
 const double _border = 1.5;
-const double _highlightBorder = 2.5;
+const double _highlightBorder = PoolLayout.upcomingBorderMax;
 
-// Binnenhoogte: 106 − 2 × 6 padding − 2 × de dikste rand (zodat niets
+// Binnenhoogte: vakhoogte − 2 × padding − 2 × de dikste rand (zodat niets
 // verspringt als de rand dikker wordt).
 const double _innerHeight =
     PoolLayout.upcomingHeight - 2 * _padV - 2 * _highlightBorder;
 
 /// Het brede vak onderaan met de volgende oefening (de herhalingen van de
-/// huidige overgeslagen), in haar eerste herhaling: links `N×` en W/R,
-/// rechts de lijnen (altijd 5 plaatsen, niet groter bij minder lijnen).
+/// huidige overgeslagen), in haar eerste herhaling: links `N×` (of
+/// `WAIT COACH` bij een ongetimede oefening) en W/R, rechts de lijnen
+/// (altijd [PoolLayout.lineSlots] plaatsen, niet groter bij minder lijnen),
+/// even breed en op dezelfde plaats als de lijnen van de huidige oefening.
 /// Gedempt, met een oranje rand bij de laatste herhaling van de huidige
 /// oefening ([highlighted]). [step] `null` = na de laatste oefening: `END`.
 class UpcomingCard extends StatelessWidget {
@@ -35,9 +37,12 @@ class UpcomingCard extends StatelessWidget {
     return Container(
       key: ValueKey(highlighted ? 'upcoming-highlighted' : 'upcoming'),
       height: PoolLayout.upcomingHeight,
-      padding: EdgeInsets.symmetric(
-        horizontal: _padH + _highlightBorder - borderWidth,
-        vertical: _padV + _highlightBorder - borderWidth,
+      // De rand telt mee in de marge, zodat de inhoud niet verspringt.
+      padding: EdgeInsets.fromLTRB(
+        _padH + _highlightBorder - borderWidth,
+        _padV + _highlightBorder - borderWidth,
+        PoolLayout.upcomingPadRight - borderWidth,
+        _padV + _highlightBorder - borderWidth,
       ),
       decoration: BoxDecoration(
         color: theme.nextSurface,
@@ -83,10 +88,22 @@ class _Content extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                '${step.path.repetition.count}×',
-                style: theme.number(24, color: theme.textPrimary),
-              ),
+              if (_isUntimed(group))
+                Text(
+                  PoolLabels.waitCoach,
+                  key: const ValueKey('upcoming-wait'),
+                  style: theme.label(
+                    22,
+                    weight: FontWeight.w700,
+                    color: theme.textPrimary,
+                    letterSpacing: 0.08,
+                  ),
+                )
+              else
+                Text(
+                  '${step.path.repetition.count}×',
+                  style: theme.number(24, color: theme.textPrimary),
+                ),
               const SizedBox(height: 8),
               WorkRestText(
                 workSeconds: group?.workSeconds ?? 0,
@@ -97,7 +114,7 @@ class _Content extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: PoolLayout.upcomingLeftGap),
         Expanded(
           child: _isRestOnly(group)
               ? Center(
@@ -125,6 +142,10 @@ class _Content extends StatelessWidget {
   }
 }
 
+/// Een ongetimede oefening (geen werk en geen rust): wacht op de coach.
+bool _isUntimed(DisplayGroup? group) =>
+    group != null && group.workSeconds <= 0 && group.restSeconds <= 0;
+
 /// Een oefening met enkel rust en zonder lijnen (bv. rust tussen twee
 /// sets): in plaats van een leeg lijnenvak staat er `REST`.
 bool _isRestOnly(DisplayGroup? group) =>
@@ -142,6 +163,7 @@ class _SplitContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = PoolDisplayTheme.of(context);
     return Row(
       children: [
         for (var i = 0; i < step.groups.length; i++) ...[
@@ -164,6 +186,18 @@ class _SplitContent extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 8),
+                      if (_isUntimed(step.groups[i]))
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            PoolLabels.waitCoach,
+                            style: theme.label(
+                              13,
+                              weight: FontWeight.w700,
+                              color: theme.textSecondary,
+                            ),
+                          ),
+                        ),
                       WorkRestText(
                         workSeconds: step.groups[i].workSeconds,
                         restSeconds: step.groups[i].restSeconds,

@@ -40,6 +40,12 @@ class PoolTrainingView extends StatelessWidget {
         title: PoolLabels.ready,
         subtitle: PoolLabels.waitingForStart,
       );
+    } else if (position.isWaitingForCoach) {
+      // Zoals vóór de start: groot bericht, de volgende oefening onderaan.
+      middle = _Message(
+        title: PoolLabels.wait,
+        subtitle: PoolLabels.waitingForCoach,
+      );
     } else if (current.isGroupSplit) {
       middle = _SplitMiddle(position: position, step: current);
     } else {
@@ -68,10 +74,10 @@ class PoolTrainingView extends StatelessWidget {
       child: Column(
         children: [
           TrainingProgressBar(items: position.progressBar),
-          //const SizedBox(height: PoolLayout.zoneGap),
+          const SizedBox(height: PoolLayout.progressGap),
           SizedBox(
             height: PoolLayout.middleHeight,
-            child: current == null
+            child: current == null || position.isWaitingForCoach
                 ? middle
                 : _FocusFrame(focused: position.focusOnCurrent, child: middle),
           ),
@@ -217,7 +223,8 @@ class _FocusFrame extends StatelessWidget {
   }
 }
 
-/// Vóór de start en na het einde: één groot bericht in de bovenste zones.
+/// Vóór de start, wachtend op de coach en na het einde: één groot bericht
+/// in het midden.
 class _Message extends StatelessWidget {
   const _Message({required this.title, this.subtitle});
 

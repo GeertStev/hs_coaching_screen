@@ -13,9 +13,14 @@ abstract final class PoolLabels {
   static const exercise = 'EXERCISE';
   static const ready = 'READY';
   static const waitingForStart = 'Waiting for the coach to start';
+  static const wait = 'WAIT';
+  static const waitingForCoach = 'Waiting for the coach';
+  static const waitCoach = 'WAIT COACH';
   static const trainingDone = 'Training done';
   static const start = 'Start';
   static const end = 'END';
+  static const workShort = 'W:';
+  static const restShort = 'R:';
 
   static String lengths(int done, int total) => '$done / $total laps';
 
@@ -52,22 +57,10 @@ String formatDelta(int deltaSeconds) {
   return 'Δ $sign${deltaSeconds.abs()}s';
 }
 
-/// `W: 00:05 (−5s)`: werktijd van deze herhaling, met de delta als die er
-/// is; leeg als de stap ongetimed is.
-String formatWorkLine(int workSeconds, int deltaSeconds) {
-  if (workSeconds <= 0) return '';
-  final delta = deltaSeconds == 0
-      ? ''
-      : ' (${deltaSeconds < 0 ? '−' : '+'}${deltaSeconds.abs()}s)';
-  return 'W: ${formatTimer(workSeconds)}$delta';
-}
-
-/// `R: 00:10`; leeg als de stap ongetimed is (geen werk en geen rust). Een
-/// oefening met enkel rust toont dus enkel deze regel.
-String formatRestLine(int workSeconds, int restSeconds) =>
-    workSeconds <= 0 && restSeconds <= 0
+/// `(−5s)` / `(+5s)` achter de werktijd; leeg zonder delta.
+String formatDeltaShort(int deltaSeconds) => deltaSeconds == 0
     ? ''
-    : 'R: ${formatTimer(restSeconds)}';
+    : '(${deltaSeconds < 0 ? '−' : '+'}${deltaSeconds.abs()}s)';
 
 /// `1/2`: herhaling (1-gebaseerd) van het aantal.
 String formatCounter(int value, int count) => '$value/$count';

@@ -37,6 +37,22 @@ lib/
   - `DisplayContentSettings` (`settings/content`, which content type is showing) is this repo's own
     Freezed model; regenerate with build_runner after touching it.
 - `ContentSwitcher` maps each `DisplayContentType` to one screen widget; add a case for a new type.
+- Match scoreboard (`features/match/`, spec core `docs/uwh/03-wedstrijdtafel-ui.md` §4) is **not** a
+  content type: the url decides. `main.dart` reads `ScoreboardRoute.fromUri(Uri.base)`:
+  `?match=<matchId>` → `MatchScoreboardScreen`, `?field=<fieldId>` → `FieldScoreboardScreen` (follows
+  the live match on that field, keeps the last one until the next goes live); `&display=1` keeps it
+  inside the pool display's configured screen size, otherwise it fills the window. Without these
+  parameters the normal pool screen starts.
+  - `data/match_repository.dart`: core's `FirestoreMatchRepository` as-is, `matchStateProvider(matchId)`
+    (a family, never a global active match), `matchNowProvider` (server time, overridden in tests).
+  - `LiveScoreboard` repaints with a `Ticker` but **computes** every frame's `ScoreboardModel` from
+    core's `clockViewAt`; it only rebuilds when the model changes. `ScoreboardModel.from(ClockView)`
+    is pure and holds ready-made texts; `ScoreboardView` just draws it on a 416-high canvas
+    (`ScoreboardLayout`, scaled as a whole like Training).
+  - Colours and font sizes only via `ScoreboardTheme` (provisional, registered in `AppTheme`).
+  - `?match=demo` (also `demo-timeout`, `demo-halftime`, `demo-stopped`, `demo-final`, `?field=demo`)
+    shows an in-memory demo match (`data/demo_match.dart`), no Firebase data involved. Goldens of
+    these at 624×416 and 1920×1080 in `test/features/match/presentation/goldens/`.
 - Training uses the pool-display design (`docs/pool-display-spec.md`): `training/presentation/pool/`
   draws a fixed 624×416 canvas that `TrainingScreen` scales into the content area. Colours and fonts
   only via `PoolDisplayTheme` (tokens, registered in `AppTheme`), sizes only via `PoolLayout`; never

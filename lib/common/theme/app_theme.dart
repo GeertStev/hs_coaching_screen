@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hs_coaching_screen/features/match/presentation/scoreboard_theme.dart';
 import 'package:hs_coaching_screen/features/training/presentation/pool/pool_display_theme.dart';
 
 class AppTheme {
@@ -6,7 +7,7 @@ class AppTheme {
 
   static final ThemeData darkTheme = ThemeData(
     useMaterial3: true,
-    extensions: const [PoolDisplayTheme.standard],
+    extensions: const [PoolDisplayTheme.standard, ScoreboardTheme.standard],
     //scaffoldBackgroundColor: const Color.fromARGB(255, 0, 51, 170),
     colorScheme: ColorScheme(
       brightness: Brightness.dark,

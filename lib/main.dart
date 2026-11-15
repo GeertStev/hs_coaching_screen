@@ -9,6 +9,7 @@ import 'package:hs_coaching_core/core/providers/riverpod_config.dart';
 
 import 'package:hs_coaching_screen/common/theme/app_theme.dart';
 import 'package:hs_coaching_screen/features/display_limits.dart';
+import 'package:hs_coaching_screen/features/match/presentation/scoreboard_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,13 +30,17 @@ class MainApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Een url met ?match=<id> of ?field=<id> opent het wedstrijdscorebord.
+    final scoreboard = ScoreboardRoute.fromUri(Uri.base);
     return MaterialApp(
       title: 'Holy Squid Coaching screen',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
 
       // Restrain the display
-      home: const DisplayLimits(),
+      home: scoreboard != null
+          ? ScoreboardPage(route: scoreboard)
+          : const DisplayLimits(),
     );
   }
 }

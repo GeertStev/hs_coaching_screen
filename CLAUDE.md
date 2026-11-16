@@ -53,6 +53,10 @@ lib/
   - `?match=demo` (also `demo-timeout`, `demo-halftime`, `demo-stopped`, `demo-final`, `?field=demo`)
     shows an in-memory demo match (`data/demo_match.dart`), no Firebase data involved. Goldens of
     these at 624×416 and 1920×1080 in `test/features/match/presentation/goldens/`.
+- Team (`features/team/`) has two sources for the lineup, chosen by commenting one block in
+  `TeamDisplay.build` (`team.dart`): the Google Apps Script url (`teamsProvider`, active) or the
+  app's Team scheduler (`appTeamsProvider`, reads `settings/team.lineup` live). Geert switches
+  between them by hand while testing; don't remove the url source without his OK.
 - Training uses the pool-display design (`docs/pool-display-spec.md`): `training/presentation/pool/`
   draws a fixed 624×416 canvas that `TrainingScreen` scales into the content area. Colours and fonts
   only via `PoolDisplayTheme` (tokens, registered in `AppTheme`), sizes only via `PoolLayout`; never

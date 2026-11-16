@@ -11,8 +11,18 @@ class TeamDisplay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // ------------------------------------------------------------------
+    // BRON VAN DE OPSTELLING: laat precies één van de twee blokken actief
+    // en zet het andere in commentaar.
+    //
+    // 1) URL: het Google-blad via het Apps Script (zoals het altijd was).
     ref.watch(teamUpdateListenerProvider);
     final teamsAsync = ref.watch(teamsProvider);
+    //
+    // 2) APP: de opstelling uit de Team scheduler van de app
+    //    ("Make teams" > "Send to pool screen").
+    // final teamsAsync = ref.watch(appTeamsProvider);
+    // ------------------------------------------------------------------
     return AsyncContent(
       value: teamsAsync,
       skipLoadingOnRefresh: false,

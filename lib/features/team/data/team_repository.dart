@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hs_coaching_core/core/providers/display_device_ids_provider.dart';
 import 'package:hs_coaching_core/core/providers/firebase_providers.dart';
+import 'package:hs_coaching_core/team/team_lineup.dart';
+import 'package:hs_coaching_core/team/team_model.dart';
 import 'package:hs_coaching_core/team/team_repository.dart';
 
 /// Display-only: listens for `settings/team.timestamp` writes (from
@@ -51,4 +53,26 @@ final teamUpdateListenerProvider = Provider.autoDispose<void>((ref) {
   ref.onDispose(() {
     subscription.cancel();
   });
+});
+
+/// De opstelling die de app (Team scheduler, knop "Send to pool screen") in
+/// `settings/team.lineup` heeft gezet. Volgt elke wijziging live; er is geen
+/// Google-script meer nodig. Zolang de app niets gestuurd heeft, blijft deze
+/// provider laden.
+///
+/// Nog niet in gebruik: zie de keuze van de bron in `TeamDisplay` (`team.dart`).
+final appTeamsProvider = StreamProvider.autoDispose<List<Team>>((ref) {
+  final ids = ref.watch(displayDeviceIdsProvider);
+  return ref
+      .watch(firebaseFirestoreProvider)
+      .collection('clubs')
+      .doc(ids.clubId)
+      .collection('displays')
+      .doc(ids.displayDeviceId)
+      .collection('settings')
+      .doc('team')
+      .snapshots()
+      .map((snapshot) => teamsFromLineup(snapshot.data()))
+      .where((teams) => teams != null)
+      .cast<List<Team>>();
 });
